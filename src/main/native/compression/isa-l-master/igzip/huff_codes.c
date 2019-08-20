@@ -27,7 +27,9 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **********************************************************************/
 
-#include <immintrin.h>
+#ifndef __aarch64__
+    #include <immintrin.h>
+#endif
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
