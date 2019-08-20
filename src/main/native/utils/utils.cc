@@ -1,7 +1,7 @@
 #if defined(_MSC_VER)
   #include <intrin.h> // SIMD intrinsics for Windows
 #else
-    #ifdef __aarch64__
+  #ifdef __aarch64__
     #include "sse2neon.h"
     #include "sse2neon_ext.h"
   #else
