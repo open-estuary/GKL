@@ -4,7 +4,13 @@
 #if defined(_MSC_VER)
   #include <intrin.h> // SIMD intrinsics for Windows
 #else
-  #include <x86intrin.h> // SIMD intrinsics for GCC
+  // SIMD intrinsics for GCC
+  #ifdef __aarch64__
+      #include "sse2neon.h"
+      #include "sse2neon_ext.h"
+  #else
+      #include <x86intrin.h> 
+  #endif
 #endif
 
 #include <assert.h>
