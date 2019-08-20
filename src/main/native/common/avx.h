@@ -45,6 +45,7 @@ int check_xcr0_zmm()
     /* check if xmm, zmm and zmm state are enabled in XCR0 */
     return ((xcr0 & zmm_ymm_xmm) == zmm_ymm_xmm);
 }
+
 #ifdef __aarch64__  //ARM
  
 inline
@@ -66,8 +67,6 @@ bool is_avx512_supported()
 }
 
 #else 
-
-
 /*
  * Determine if AVX is supported. Returns true if supported.
  */
@@ -166,5 +165,5 @@ bool is_avx512_supported()
 #endif
 }
 #endif
-#endif
 
+#endif
