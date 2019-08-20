@@ -30,7 +30,9 @@
 #ifndef HUFF_CODES_H
 #define HUFF_CODES_H
 
-#include <immintrin.h>
+#ifndef __aarch64__
+    #include <immintrin.h>
+#endif
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
@@ -40,7 +42,12 @@
 #ifdef _MSC_VER
 # include <intrin.h>
 #else
-# include <x86intrin.h>
+    #ifdef __aarch64__
+        #include "sse2neon.h"
+        #include "sse2neon_ext.h"
+    #else
+        # include <x86intrin.h>
+    #endif
 #endif
 
 #define LIT_LEN ISAL_DEF_LIT_LEN_SYMBOLS
