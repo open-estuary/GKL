@@ -36,7 +36,12 @@
 # include <intrin.h>
 # define inline __inline
 #else
-# include <x86intrin.h>
+    #ifdef __aarch64__
+        #include "sse2neon.h"
+        #include "sse2neon_ext.h"
+    #else
+        #include <x86intrin.h>
+    #endif
 #endif
 
 static inline uint32_t bsr(uint32_t val)
