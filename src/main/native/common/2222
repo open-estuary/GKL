@@ -1,0 +1,1003 @@
+    switch(e15)
+    {
+        case 0: {
+            (res.val[3])[3] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[3])[3] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[3])[3] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[3])[3] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[3])[3] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[3])[3] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[3])[3] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[3])[3] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[3])[3] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[3])[3] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[3])[3] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[3])[3] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[3])[3] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[3])[3] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[3])[3] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[3])[3] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[3])[3] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    /*int64x2x4_t b;
+    int64x2x4_t c;
+
+    (b.val[0])[0] = 7;
+    (b.val[0])[1] = 7;
+    (b.val[1])[0] = 7;
+    (b.val[1])[1] = 7;
+
+    (b.val[2])[0] = 7;
+    (b.val[2])[1] = 7;
+    (b.val[3])[0] = 7;
+    (b.val[3])[1] = 7;*/
+
+    //res = a;
+    /*c.val[0] = vandq_s64((int64x2_t)idx.val[0], int64x2_t)b.val[0]);
+    c.val[1] = vandq_s64((int64x2_t)idx.val[1], int64x2_t)b.val[1]);
+    c.val[2] = vandq_s64((int64x2_t)idx.val[2], int64x2_t)b.val[2]);
+    c.val[3] = vandq_s64((int64x2_t)idx.val[3], int64x2_t)b.val[3]);
+
+    res.val[0] = a.val[]*/
+
+  
+    return (__m512i)res;
+}
+
+//Copy a to dst, and insert the 64-bit integer i into dst at the location specified by index.
+FORCE_INLINE __m256i _mm256_insert_epi64(__m256i a, __int64 i, const int index)
+{
+    int32x4x2_t res;
+
+    switch(index)
+    {
+        case 0:{
+            res.val[0] = (int32x4_t)vsetq_lane_s64((__int64)i,(int64x2_t)a.val[0], 0);
+            res.val[1] = (int32x4_t)a.val[1];
+            break;
+        }
+            
+       case 1:{
+            res.val[0] = (int32x4_t)vsetq_lane_s64((__int64)i,(int64x2_t)a.val[0], 1);
+            res.val[1] = (int32x4_t)a.val[1];
+            break;
+        }
+
+        case 2:{
+            res.val[0] = (int32x4_t)a.val[0];
+            res.val[1] = (int32x4_t)vsetq_lane_s64((__int64)i,(int64x2_t)a.val[1], 0);
+            break;
+        }
+
+        case 3:{
+            res.val[0] = (int32x4_t)a.val[0];
+            res.val[1] = (int32x4_t)vsetq_lane_s64((__int64)i,(int64x2_t)a.val[1], 1);
+            break;
+        }
+
+        default :{
+            res.val[0] = (int32x4_t)a.val[0];
+            res.val[1] = (int32x4_t)a.val[1];
+            break;
+        }
+    }
+
+    //res = (int64_t);
+  
+    return (__m256i)res;
+}
+
+//Copy a to dst, and insert the 32-bit integer i into dst at the location specified by index.
+FORCE_INLINE __m256i _mm256_insert_epi32(__m256i a, __int32 i, const int index)
+{
+    int32x4x2_t res;
+
+    switch(index)
+    {
+        case 0:{
+            res.val[0] = (int32x4_t)vsetq_lane_s32((__int32)i,(int32x4_t)a.val[0], 0);
+            res.val[1] = (int32x4_t)a.val[1];
+            break;
+        }
+            
+       case 1:{
+            res.val[0] = (int32x4_t)vsetq_lane_s32((__int32)i,(int32x4_t)a.val[0], 1);
+            res.val[1] = (int32x4_t)a.val[1];
+            break;
+        }
+
+        case 2:{
+            res.val[0] = (int32x4_t)vsetq_lane_s32((__int32)i,(int32x4_t)a.val[0], 2);
+            res.val[1] = (int32x4_t)a.val[1];
+            break;
+        }
+
+        case 3:{
+            res.val[0] = (int32x4_t)vsetq_lane_s32((__int32)i,(int32x4_t)a.val[0], 3);
+            res.val[1] = (int32x4_t)a.val[1];
+            break;
+        }
+
+        case 4:{
+            res.val[0] = (int32x4_t)a.val[0];
+            res.val[1] = (int32x4_t)vsetq_lane_s32((__int32)i,(int32x4_t)a.val[1], 0);
+            break;
+        }
+
+        case 5:{
+            res.val[0] = (int32x4_t)a.val[0];
+            res.val[1] = (int32x4_t)vsetq_lane_s32((__int32)i,(int32x4_t)a.val[1], 1);
+            break;
+        }
+
+        case 6:{
+            res.val[0] = (int32x4_t)a.val[0];
+            res.val[1] = (int32x4_t)vsetq_lane_s32((__int32)i,(int32x4_t)a.val[1], 2);
+            break;
+        }
+
+        case 7:{
+            res.val[0] = (int32x4_t)a.val[0];
+            res.val[1] = (int32x4_t)vsetq_lane_s32((__int32)i,(int32x4_t)a.val[1], 3);
+            break;
+        }
+
+        default :{
+            res.val[0] = (int32x4_t)a.val[0];
+            res.val[1] = (int32x4_t)a.val[1];
+            break;
+        }
+    }
+  
+    return (__m256i)res;
+}
+
+//Extract a 64-bit integer from a, selected with index, and store the result in dst.
+FORCE_INLINE __int64 _mm256_extract_epi64(__m256i a, const int index)
+{
+    //int64_t res;
+
+    switch(index)
+    {
+        case 0:
+            return vgetq_lane_s64((int64x2_t)a.val[0], 0);
+        case 1:
+            return vgetq_lane_s64((int64x2_t)a.val[0], 1);
+        case 2:
+            return vgetq_lane_s64((int64x2_t)a.val[1], 0);
+        case 3:
+            return vgetq_lane_s64((int64x2_t)a.val[1], 1);
+        default:
+            return vgetq_lane_s64((int64x2_t)a.val[2], 0);
+    }
+
+    //res = (int64_t);
+  
+    //return (__int64)res;
+}
+
+//Extract a 32-bit integer from a, selected with index, and store the result in dst.
+FORCE_INLINE __int32 _mm256_extract_epi32(__m256i a, const int index)
+{
+    //int32_t res;
+    switch(index)
+    {
+        case 0:
+            return vgetq_lane_s32((int32x4_t)a.val[0], 0);
+        case 1:
+            return vgetq_lane_s32((int32x4_t)a.val[0], 1);
+        case 2:
+            return vgetq_lane_s32((int32x4_t)a.val[0], 2);
+        case 3:
+            return vgetq_lane_s32((int32x4_t)a.val[0], 3);
+        case 4:
+            return vgetq_lane_s32((int32x4_t)a.val[1], 0);
+        case 5:
+            return vgetq_lane_s32((int32x4_t)a.val[1], 1);
+        case 6:
+            return vgetq_lane_s32((int32x4_t)a.val[1], 2);
+        case 7:
+            return vgetq_lane_s32((int32x4_t)a.val[1], 3);
+
+        default:
+            return vgetq_lane_s32((int32x4_t)a.val[2], 0);
+    }
+
+    //res = 0;
+  
+    //return (__int32)res;
+}
+
+//Shift packed 64-bit integers in a left by imm8 while shifting in zeros, and store the results in dst.
+FORCE_INLINE __m256i _mm256_slli_epi64(__m256i a, const int imm8)
+{
+    int32x4x2_t res;
+
+    //res = a;
+        // int64x2_t vdupq_n_s64 (int64_t value)
+    //if(imm8 > 63 || imm8 < 0){
+        //res.val[0] = vdupq_n_s32((int32_t)0);
+        //res.val[1] = vdupq_n_s32((int32_t)0);
+        //return (__m256i)res;
+    //}
+        
+    //res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], imm8);
+    //res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], imm8);
+    // int64x2_t vshlq_n_s64 (int64x2_t a, const int n)
+    
+    switch(imm8)
+    {
+        case 0:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 0);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 0);
+        case 1:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 1);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 1);
+        case 2:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 2);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 2);
+        case 3:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 3);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 3);
+        case 4:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 4);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 4);
+        case 5:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 5);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 5);
+        case 6:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 6);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 6);
+        case 7:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 7);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 7);
+        case 8:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 8);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 8);
+        case 9:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 9);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 9);
+        case 10:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 10);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 10);
+        case 11:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 11);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 11);
+        case 12:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 12);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 12);
+        case 13:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 13);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 13);
+        case 14:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 14);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 14);
+        case 15:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 15);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 15);
+        case 16:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 16);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 16);
+        case 17:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 17);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 17);
+        case 18:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 18);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 18);
+        case 19:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 19);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 19);
+        case 20:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 20);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 20);
+        case 21:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 21);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 21);
+        case 22:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 22);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 22);
+        case 23:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 23);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 23);
+        case 24:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 24);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 24);
+        case 25:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 25);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 25);
+        case 26:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 26);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 26);
+        case 27:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 27);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 27);
+        case 28:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 28);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 28);
+        case 29:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 29);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 29);
+        case 30:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 30);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 30);
+        case 31:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 31);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 31);
+        case 32:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 32);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 32);
+        case 33:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 33);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 33);
+        case 34:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 34);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 34);
+        case 35:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 35);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 35);
+        case 36:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 36);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 36);
+        case 37:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 37);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 37);
+        case 38:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 38);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 38);
+        case 39:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 39);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 39);
+        case 40:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 40);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 40);
+        case 41:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 41);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 41);
+        case 42:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 42);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 42);
+        case 43:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 43);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 43);
+        case 44:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 44);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 44);
+        case 45:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 45);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 45);
+        case 46:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 46);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 46);
+        case 47:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 47);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 47);
+        case 48:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 48);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 48);
+        case 49:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 49);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 49);
+        case 50:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 50);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 50);
+        case 51:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 51);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 51);
+        case 52:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 52);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 52);
+        case 53:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 53);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 53);
+        case 54:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 54);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 54);
+        case 55:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 55);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 55);
+        case 56:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 56);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 56);
+        case 57:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 57);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 57);
+        case 58:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 58);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 58);
+        case 59:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 59);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 59);
+        case 60:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 60);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 60);
+        case 61:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 61);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 61);
+        case 62:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 62);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 62);
+        case 63:
+            res.val[0] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[0], 63);
+            res.val[1] = (int32x4_t)vshlq_n_s64((int64x2_t)a.val[1], 63);
+        default:
+            res.val[0] = vdupq_n_s32((int32_t)0);
+            res.val[1] = vdupq_n_s32((int32_t)0);
+    }
+    return (__m256i)res;
+}
+
+//Shift packed 32-bit integers in a left by imm8 while shifting in zeros, and store the results in dst.
+FORCE_INLINE __m256i _mm256_slli_epi32(__m256i a, const int imm8)
+{
+    int32x4x2_t res;
+
+    //res = a;
+    //if(imm8 > 31 || imm8 < 0){
+        //res.val[0] = vdupq_n_s32((int32_t)0);
+        //res.val[1] = vdupq_n_s32((int32_t)0);
+        //return (__m256i)res;
+    //}
+        
+    //res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], imm8);
+    //res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], imm8);
+
+    switch(imm8)
+    {
+        case 0:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 0);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 0);
+        case 1:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 1);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 1);
+        case 2:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 2);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 2);
+        case 3:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 3);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 3);
+        case 4:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 4);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 4);
+        case 5:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 5);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 5);
+        case 6:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 6);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 6);
+        case 7:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 7);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 7);
+        case 8:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 8);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 8);
+        case 9:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 9);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 9);
+        case 10:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 10);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 10);
+        case 11:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 11);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 11);
+        case 12:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 12);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 12);
+        case 13:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 13);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 13);
+        case 14:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 14);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 14);
+        case 15:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 15);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 15);
+        case 16:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 16);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 16);
+        case 17:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 17);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 17);
+        case 18:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 18);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 18);
+        case 19:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 19);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 19);
+        case 20:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 20);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 20);
+        case 21:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 21);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 21);
+        case 22:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 22);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 22);
+        case 23:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 23);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 23);
+        case 24:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 24);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 24);
+        case 25:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 25);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 25);
+        case 26:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 26);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 26);
+        case 27:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 27);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 27);
+        case 28:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 28);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 28);
+        case 29:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 29);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 29);
+        case 30:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 30);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 30);
+        case 31:
+            res.val[0] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[0], 31);
+            res.val[1] = (int32x4_t)vshlq_n_s32((int32x4_t)a.val[1], 31);
+        default:
+            res.val[0] = vdupq_n_s32((int32_t)0);
+            res.val[1] = vdupq_n_s32((int32_t)0);
+    }
+  
+    return (__m256i)res;
+}
+
+//Shift 128-bit lanes in a left by imm8 bytes while shifting in zeros, and store the results in dst.
+/*FORCE_INLINE __m256i _mm256_slli_si256(__m256i a, const int imm8)
+{
+    int32x4x2_t res;
+
+    res.val[0] = (int32x4_t)a.val[0]; 
+    res.val[1] = (int32x4_t)a.val[1];
+  
+    return (__m256i)res;
+}
+
+//Shift 128-bit lanes in a left by imm8 bytes while shifting in zeros, and store the results in dst.
+FORCE_INLINE __m512i _mm512_bslli_epi128(__m512i a, int imm8)
+{
+    int32x4x4_t res;
+
+    res.val[0] = (int32x4_t)a.val[0]; 
+    res.val[1] = (int32x4_t)a.val[1];
+    res.val[2] = (int32x4_t)a.val[2]; 
+    res.val[3] = (int32x4_t)a.val[3];
+  
+    return (__m512i)res;
+}
+
+//Shift 128-bit lanes in a right by imm8 bytes while shifting in zeros, and store the results in dst.
+FORCE_INLINE __m512i _mm512_bsrli_epi128(__m512i a, int imm8)
+{
+    int32x4x4_t res;
+
+    res.val[0] = (int32x4_t)a.val[0]; 
+    res.val[1] = (int32x4_t)a.val[1];
+    res.val[2] = (int32x4_t)a.val[2]; 
+    res.val[3] = (int32x4_t)a.val[3];
+  
+    return (__m512i)res;
+}*/
+
+//Copy a to dst, then insert 256 bits (composed of 8 packed 32-bit integers) from b into dst at the location specified by imm8.
+FORCE_INLINE __m512i _mm512_inserti32x8(__m512i a, __m256i b, int imm8)
+{
+    int32x4x4_t res;
+
+    res.val[0] = (int32x4_t)a.val[0]; 
+    res.val[1] = (int32x4_t)a.val[1];
+    res.val[2] = (int32x4_t)a.val[2]; 
+    res.val[3] = (int32x4_t)a.val[3];
+
+
+    switch(imm8)
+    {
+        case 0: {
+            res.val[0] = (int32x4_t)b.val[0]; 
+            res.val[1] = (int32x4_t)b.val[1];
+            break;
+        }
+        case 1: {
+            res.val[2] = (int32x4_t)b.val[0]; 
+            res.val[3] = (int32x4_t)b.val[1];
+            break;
+        }
+        default: {
+            res.val[2] = (int32x4_t)b.val[2]; 
+            res.val[3] = (int32x4_t)b.val[2];
+            break;
+        }
+    }
+  
+
+    //res = a;
+  
+    return (__m512i)res;
+}
+
+//Copy a to dst, then insert 256 bits (composed of 4 packed 64-bit integers) from b into dst at the location specified by imm8.
+FORCE_INLINE __m512i _mm512_inserti64x4(__m512i a, __m256i b, int imm8)
+{
+    //int32x4x4_t res;
+    int32x4x4_t res;
+
+    res.val[0] = (int32x4_t)a.val[0]; 
+    res.val[1] = (int32x4_t)a.val[1];
+    res.val[2] = (int32x4_t)a.val[2]; 
+    res.val[3] = (int32x4_t)a.val[3];
+
+    /*if (imm8 == 0){
+        res.val[0] = (float64x2_t)a.val[0]; 
+        res.val[1] = (float64x2_t)a.val[1];
+    }
+
+    if (imm8 == 1){
+        res.val[2] = (float64x2_t)a.val[2]; 
+        res.val[3] = (float64x2_t)a.val[3];
+    }*/
+    switch(imm8)
+    {
+        case 0: {
+            res.val[0] = (int32x4_t)b.val[0]; 
+            res.val[1] = (int32x4_t)b.val[1];
+            break;
+        }
+        case 1: {
+            res.val[2] = (int32x4_t)b.val[0]; 
+            res.val[3] = (int32x4_t)b.val[1];
+            break;
+        }
+        default: {
+            res.val[2] = (int32x4_t)b.val[2]; 
+            res.val[3] = (int32x4_t)b.val[2];
+            break;
+        }
+    }
+  
+    return (__m512i)res;
+
+    //res = a;
+  
+    //return (__m512i)res;
+}
+
+//Extract 256 bits (composed of 8 packed single-precision (32-bit) floating-point elements) from a, selected with imm8, and store the result in dst.
+FORCE_INLINE __m256 _mm512_extractf32x8_ps(__m512 a, int imm8)
+{
+    float32x4x2_t res;
+
+    switch(imm8)
+    {
+        case 0: {
+            res.val[0] = (float32x4_t)a.val[0]; 
+            res.val[1] = (float32x4_t)a.val[1];
+            break;
+        }
+        case 1: {
+            res.val[0] = (float32x4_t)a.val[2]; 
+            res.val[1] = (float32x4_t)a.val[3];
+            break;
+        }
+        default: {
+            res.val[0] = (float32x4_t)a.val[4]; 
+            res.val[1] = (float32x4_t)a.val[4];
+            break;
+        }
+    }
+
+  
+    return (__m256)res;
+}
+
+
+//Extract 256 bits (composed of 4 packed double-precision (64-bit) floating-point elements) from a, selected with imm8, and store the result in dst.
+FORCE_INLINE __m256d _mm512_extractf64x4_pd(__m512d a, int imm8)
+{
+    float64x2x2_t res;
+    /*if (imm8 == 0){
+        res.val[0] = (float64x2_t)a.val[0]; 
+        res.val[1] = (float64x2_t)a.val[1];
+    }
+
+    if (imm8 == 1){
+        res.val[2] = (float64x2_t)a.val[2]; 
+        res.val[3] = (float64x2_t)a.val[3];
+    }*/
+    switch(imm8)
+    {
+        case 0: {
+            res.val[0] = (float64x2_t)a.val[0]; 
+            res.val[1] = (float64x2_t)a.val[1];
+            break;
+        }
+        case 1: {
+            res.val[0] = (float64x2_t)a.val[2]; 
+            res.val[1] = (float64x2_t)a.val[3];
+            break;
+        }
+        default: {
+            res.val[0] = (float64x2_t)a.val[4]; 
+            res.val[1] = (float64x2_t)a.val[4];
+            break;
+        }
+    }
+
+  
+    return (__m256d)res;
+}
+
+//Copy a to dst, then insert 256 bits (composed of 4 packed double-precision (64-bit) floating-point elements) from b into dst at the location specified by imm8.
+FORCE_INLINE __m512d _mm512_insertf64x4(__m512d a, __m256d b, int imm8)
+{
+    float64x2x4_t res;
+
+    res.val[0] = (float64x2_t)a.val[0]; 
+    res.val[1] = (float64x2_t)a.val[1];
+    res.val[2] = (float64x2_t)a.val[2]; 
+    res.val[3] = (float64x2_t)a.val[3];
+
+    switch(imm8)
+    {
+        case 0: {
+            res.val[0] = (float64x2_t)b.val[0]; 
+            res.val[1] = (float64x2_t)b.val[1];
+            break;
+        }
+        case 1: {
+            res.val[2] = (float64x2_t)b.val[0]; 
+            res.val[3] = (float64x2_t)b.val[1];
+            break;
+        }
+        default: {
+            res.val[2] = (float64x2_t)b.val[2]; 
+            res.val[3] = (float64x2_t)b.val[2];
+            break;
+        }
+    }
+  
+    return (__m512d)res;
+} 
+
+//Copy a to dst, then insert 256 bits (composed of 4 packed double-precision (32-bit) floating-point elements) from b into dst at the location specified by imm8.
+FORCE_INLINE __m512 _mm512_insertf32x8(__m512 a, __m256 b, int imm8)
+{
+    float32x4x4_t res;
+
+    res.val[0] = (float32x4_t)a.val[0]; 
+    res.val[1] = (float32x4_t)a.val[1];
+    res.val[2] = (float32x4_t)a.val[2]; 
+    res.val[3] = (float32x4_t)a.val[3];
+
+    switch(imm8)
+    {
+        case 0: {
+            res.val[0] = (float32x4_t)b.val[0]; 
+            res.val[1] = (float32x4_t)b.val[1];
+            break;
+        }
+        case 1: {
+            res.val[2] = (float32x4_t)b.val[0]; 
+            res.val[3] = (float32x4_t)b.val[1];
+            break;
+        }
+        default: {
+            res.val[2] = (float32x4_t)b.val[2]; 
+            res.val[3] = (float32x4_t)b.val[2];
+            break;
+        }
+    }
+  
+    return (__m512)res;
+} 
+
+// mask %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//Blend packed double-precision (64-bit) floating-point elements from a and b using control mask k, and store the results in dst.
+FORCE_INLINE __m512d _mm512_mask_blend_pd(__mmask8 k, __m512d a, __m512d b)
+{
+    float64x2x4_t res;
+    //res = a;
+    (res.val[0])[0] = (k & 0x01) ? ((float64x2_t)b.val[0])[0] : ((float64x2_t)a.val[0])[0];
+    (res.val[0])[1] = (k & 0x02) ? ((float64x2_t)b.val[0])[1] : ((float64x2_t)a.val[0])[1];
+    (res.val[1])[0] = (k & 0x04) ? ((float64x2_t)b.val[1])[0] : ((float64x2_t)a.val[1])[0];
+    (res.val[1])[1] = (k & 0x08) ? ((float64x2_t)b.val[1])[1] : ((float64x2_t)a.val[1])[1];
+
+    (res.val[2])[0] = (k & 0x10) ? ((float64x2_t)b.val[2])[0] : ((float64x2_t)a.val[2])[0];
+    (res.val[2])[1] = (k & 0x20) ? ((float64x2_t)b.val[2])[1] : ((float64x2_t)a.val[2])[1];
+    (res.val[3])[0] = (k & 0x40) ? ((float64x2_t)b.val[3])[0] : ((float64x2_t)a.val[3])[0];
+    (res.val[3])[1] = (k & 0x80) ? ((float64x2_t)b.val[3])[1] : ((float64x2_t)a.val[3])[1];
+    /*if ((k & 0x01) == 0) (res.val[0])[0] = (a.val[0])[0];
+    else (res.val[0])[0] = (b.val[0])[0];
+
+    if ((k & 0x02) == 0) (res.val[0])[1] = (a.val[0])[1];
+    else (res.val[0])[1] = (b.val[0])[1];
+
+    if ((k & 0x04) == 0) (res.val[1])[0] = (a.val[1])[0];
+    else (res.val[1])[0] = (b.val[1])[0];
+
+    if ((k & 0x08) == 0) (res.val[1])[1] = (a.val[1])[1];
+    else (res.val[1])[1] = (b.val[1])[1];
+
+    if ((k & 0x10) == 0) (res.val[2])[0] = (a.val[2])[0];
+    else (res.val[2])[0] = (b.val[2])[0];
+
+    if ((k & 0x20) == 0) (res.val[2])[1] = (a.val[2])[1];
+    else (res.val[2])[1] = (b.val[2])[1];
+
+    if ((k & 0x40) == 0) (res.val[3])[0] = (a.val[3])[0];
+    else (res.val[3])[0] = (b.val[3])[0];
+
+    if ((k & 0x80) == 0) (res.val[3])[1] = (a.val[3])[1];
+    else (res.val[3])[1] = (b.val[3])[1];*/
+
+
+    return (__m512d)res;
+}
+
+//Blend packed double-precision (32-bit) floating-point elements from a and b using control mask k, and store the results in dst.
+FORCE_INLINE __m512 _mm512_mask_blend_ps(__mmask16 k, __m512 a, __m512 b)
+{
+    float32x4x4_t res;
+    //res = a;
+
+    (res.val[0])[0] = (k & 0x0001) ? ((float32x4_t)b.val[0])[0] : ((float32x4_t)a.val[0])[0];
+    (res.val[0])[1] = (k & 0x0002) ? ((float32x4_t)b.val[0])[1] : ((float32x4_t)a.val[0])[1];
+    (res.val[0])[2] = (k & 0x0004) ? ((float32x4_t)b.val[0])[2] : ((float32x4_t)a.val[0])[2];
+    (res.val[0])[3] = (k & 0x0008) ? ((float32x4_t)b.val[0])[3] : ((float32x4_t)a.val[0])[3];
+
+    (res.val[1])[0] = (k & 0x0010) ? ((float32x4_t)b.val[1])[0] : ((float32x4_t)a.val[1])[0];
+    (res.val[1])[1] = (k & 0x0020) ? ((float32x4_t)b.val[1])[1] : ((float32x4_t)a.val[1])[1];
+    (res.val[1])[2] = (k & 0x0040) ? ((float32x4_t)b.val[1])[2] : ((float32x4_t)a.val[1])[2];
+    (res.val[1])[3] = (k & 0x0080) ? ((float32x4_t)b.val[1])[3] : ((float32x4_t)a.val[1])[3];
+
+    (res.val[2])[0] = (k & 0x0100) ? ((float32x4_t)b.val[2])[0] : ((float32x4_t)a.val[2])[0];
+    (res.val[2])[1] = (k & 0x0200) ? ((float32x4_t)b.val[2])[1] : ((float32x4_t)a.val[2])[1];
+    (res.val[2])[2] = (k & 0x0400) ? ((float32x4_t)b.val[2])[2] : ((float32x4_t)a.val[2])[2];
+    (res.val[2])[3] = (k & 0x0800) ? ((float32x4_t)b.val[2])[3] : ((float32x4_t)a.val[2])[3];
+
+    (res.val[3])[0] = (k & 0x1000) ? ((float32x4_t)b.val[3])[0] : ((float32x4_t)a.val[3])[0];
+    (res.val[3])[1] = (k & 0x2000) ? ((float32x4_t)b.val[3])[1] : ((float32x4_t)a.val[3])[1];
+    (res.val[3])[2] = (k & 0x4000) ? ((float32x4_t)b.val[3])[2] : ((float32x4_t)a.val[3])[2];
+    (res.val[3])[3] = (k & 0x8000) ? ((float32x4_t)b.val[3])[3] : ((float32x4_t)a.val[3])[3];
+
+
+    /*if ((k & 0x0001) == 0) (res.val[0])[0] = (a.val[0])[0];
+    else (res.val[0])[0] = (b.val[0])[0];
+
+    if ((k & 0x0002) == 0) (res.val[0])[1] = (a.val[0])[1];
+    else (res.val[0])[1] = (b.val[0])[1];
+
+    if ((k & 0x0004) == 0) (res.val[0])[2] = (a.val[0])[2];
+    else (res.val[0])[2] = (b.val[0])[2];
+
+    if ((k & 0x0008) == 0) (res.val[0])[3] = (a.val[0])[3];
+    else (res.val[0])[3] = (b.val[0])[3];
+
+
+    if ((k & 0x0010) == 0) (res.val[1])[0] = (a.val[1])[0];
+    else (res.val[1])[0] = (b.val[1])[0];
+
+    if ((k & 0x0020) == 0) (res.val[1])[1] = (a.val[1])[1];
+    else (res.val[1])[1] = (b.val[1])[1];
+
+    if ((k & 0x0040) == 0) (res.val[1])[2] = (a.val[1])[2];
+    else (res.val[1])[2] = (b.val[1])[2];
+
+    if ((k & 0x0080) == 0) (res.val[1])[3] = (a.val[1])[3];
+    else (res.val[1])[3] = (b.val[1])[3];
+
+
+    if ((k & 0x0100) == 0) (res.val[2])[0] = (a.val[2])[0];
+    else (res.val[2])[0] = (b.val[2])[0];
+
+    if ((k & 0x0200) == 0) (res.val[2])[1] = (a.val[2])[1];
+    else (res.val[2])[1] = (b.val[2])[1];
+
+    if ((k & 0x0400) == 0) (res.val[2])[2] = (a.val[2])[2];
+    else (res.val[2])[2] = (b.val[2])[2];
+
+    if ((k & 0x0800) == 0) (res.val[2])[3] = (a.val[2])[3];
+    else (res.val[2])[3] = (b.val[2])[3];
+
+
+    if ((k & 0x1000) == 0) (res.val[3])[0] = (a.val[3])[0];
+    else (res.val[3])[0] = (b.val[3])[0];
+
+    if ((k & 0x2000) == 0) (res.val[3])[1] = (a.val[3])[1];
+    else (res.val[3])[1] = (b.val[3])[1];
+
+    if ((k & 0x4000) == 0) (res.val[3])[2] = (a.val[3])[2];
+    else (res.val[3])[2] = (b.val[3])[2];
+
+    if ((k & 0x8000) == 0) (res.val[3])[3] = (a.val[3])[3];
+    else (res.val[3])[3] = (b.val[3])[3];*/
+
+
+    return (__m512)res;
+}
+
+//Compute the bitwise AND of packed 64-bit integers in a and b, producing intermediate 64-bit values, and set the corresponding bit in result mask k if the intermediate value is non-zero.
+FORCE_INLINE __mmask8 _mm512_test_epi64_mask(__m512i a, __m512i b)
+{
+    int8_t res = 0x00;
+
+    int64x2x4_t resand;
+    //res = 0;
+    resand.val[0] = vandq_s64((int64x2_t)a.val[0], (int64x2_t)b.val[0]);
+    resand.val[1] = vandq_s64((int64x2_t)a.val[1], (int64x2_t)b.val[1]);
+    resand.val[2] = vandq_s64((int64x2_t)a.val[2], (int64x2_t)b.val[2]);
+    resand.val[3] = vandq_s64((int64x2_t)a.val[3], (int64x2_t)b.val[3]);
+
+    if (vgetq_lane_s64(resand.val[0], 0) != 0) res = res | 0x01;
+
+    if (vgetq_lane_s64(resand.val[0], 1) != 0) res = res | 0x02;
+
+    if (vgetq_lane_s64(resand.val[1], 0) != 0) res = res | 0x04;
+
+    if (vgetq_lane_s64(resand.val[1], 1) != 0) res = res | 0x08;
+
+    if (vgetq_lane_s64(resand.val[2], 0) != 0) res = res | 0x10;
+
+    if (vgetq_lane_s64(resand.val[2], 1) != 0) res = res | 0x20;
+
+    if (vgetq_lane_s64(resand.val[3], 0) != 0) res = res | 0x40;
+
+    if (vgetq_lane_s64(resand.val[3], 1) != 0) res = res | 0x80;
+
+    return (__mmask8)res;
+}
