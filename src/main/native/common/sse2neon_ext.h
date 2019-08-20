@@ -1083,3 +1083,1155 @@ FORCE_INLINE __m512i _mm512_permutexvar_epi64(__m512i idx, __m512i a)
             break;
         }
     }
+
+    
+    /*int64x2x4_t b;
+    int64x2x4_t c;
+
+
+    (b.val[0])[0] = 7;
+    (b.val[0])[1] = 7;
+    (b.val[1])[0] = 7;
+    (b.val[1])[1] = 7;
+
+    (b.val[2])[0] = 7;
+    (b.val[2])[1] = 7;
+    (b.val[3])[0] = 7;
+    (b.val[3])[1] = 7;*/
+
+    //res = a;
+    /*c.val[0] = vandq_s64((int64x2_t)idx.val[0], int64x2_t)b.val[0]);
+    c.val[1] = vandq_s64((int64x2_t)idx.val[1], int64x2_t)b.val[1]);
+    c.val[2] = vandq_s64((int64x2_t)idx.val[2], int64x2_t)b.val[2]);
+    c.val[3] = vandq_s64((int64x2_t)idx.val[3], int64x2_t)b.val[3]);
+
+    res.val[0] = a.val[]*/
+
+  
+    return (__m512i)res;
+}
+
+//Shuffle 32-bit integers in a across lanes using the corresponding index in idx, and store the results in dst.
+FORCE_INLINE __m512i _mm512_permutexvar_epi32(__m512i idx, __m512i a)
+{
+    int32x4x4_t res;
+
+    int32_t e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15;
+
+    e0 = vgetq_lane_s32((int32x4_t)idx.val[0], 0);
+    e1 = vgetq_lane_s32((int32x4_t)idx.val[0], 1);
+    e2 = vgetq_lane_s32((int32x4_t)idx.val[0], 2);
+    e3 = vgetq_lane_s32((int32x4_t)idx.val[0], 3);
+
+    e4 = vgetq_lane_s32((int32x4_t)idx.val[1], 0);
+    e5 = vgetq_lane_s32((int32x4_t)idx.val[1], 1);
+    e6 = vgetq_lane_s32((int32x4_t)idx.val[1], 2);
+    e7 = vgetq_lane_s32((int32x4_t)idx.val[1], 3);
+
+    e8 = vgetq_lane_s32((int32x4_t)idx.val[2], 0);
+    e9 = vgetq_lane_s32((int32x4_t)idx.val[2], 1);
+    e10 = vgetq_lane_s32((int32x4_t)idx.val[2], 2);
+    e11 = vgetq_lane_s32((int32x4_t)idx.val[2], 3);
+
+    e12 = vgetq_lane_s32((int32x4_t)idx.val[3], 0);
+    e13 = vgetq_lane_s32((int32x4_t)idx.val[3], 1);
+    e14 = vgetq_lane_s32((int32x4_t)idx.val[3], 2);
+    e15 = vgetq_lane_s32((int32x4_t)idx.val[3], 3);
+
+    e0 = (int32_t)(e0 & 0x0000000F);
+    e1 = (int32_t)(e1 & 0x0000000F);
+    e2 = (int32_t)(e2 & 0x0000000F);
+    e3 = (int32_t)(e3 & 0x0000000F);
+    e4 = (int32_t)(e4 & 0x0000000F);
+    e5 = (int32_t)(e5 & 0x0000000F);
+    e6 = (int32_t)(e6 & 0x0000000F);
+    e7 = (int32_t)(e7 & 0x0000000F);
+
+    e8 = (int32_t)(e8 & 0x0000000F);
+    e9 = (int32_t)(e9 & 0x0000000F);
+    e10 = (int32_t)(e10 & 0x0000000F);
+    e11 = (int32_t)(e11 & 0x0000000F);
+    e12 = (int32_t)(e12 & 0x0000000F);
+    e13 = (int32_t)(e13 & 0x0000000F);
+    e14 = (int32_t)(e14 & 0x0000000F);
+    e15 = (int32_t)(e15 & 0x0000000F);
+
+    switch(e0)
+    {
+        case 0: {
+            (res.val[0])[0] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[0])[0] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[0])[0] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[0])[0] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[0])[0] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[0])[0] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[0])[0] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[0])[0] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[0])[0] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[0])[0] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[0])[0] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[0])[0] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[0])[0] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[0])[0] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[0])[0] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[0])[0] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[0])[0] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e1)
+    {
+        case 0: {
+            (res.val[0])[1] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[0])[1] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[0])[1] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[0])[1] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[0])[1] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[0])[1] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[0])[1] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[0])[1] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[0])[1] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[0])[1] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[0])[1] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[0])[1] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[0])[1] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[0])[1] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[0])[1] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[0])[1] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[0])[1] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e2)
+    {
+        case 0: {
+            (res.val[0])[2] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[0])[2] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[0])[2] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[0])[2] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[0])[2] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[0])[2] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[0])[2] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[0])[2] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[0])[2] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[0])[2] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[0])[2] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[0])[2] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[0])[2] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[0])[2] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[0])[2] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[0])[2] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[0])[2] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e3)
+    {
+        case 0: {
+            (res.val[0])[3] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[0])[3] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[0])[3] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[0])[3] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[0])[3] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[0])[3] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[0])[3] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[0])[3] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[0])[3] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[0])[3] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[0])[3] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[0])[3] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[0])[3] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[0])[3] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[0])[3] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[0])[3] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[0])[3] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e4)
+    {
+        case 0: {
+            (res.val[1])[0] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[1])[0] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[1])[0] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[1])[0] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[1])[0] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[1])[0] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[1])[0] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[1])[0] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[1])[0] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[1])[0] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[1])[0] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[1])[0] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[1])[0] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[1])[0] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[1])[0] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[1])[0] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[1])[0] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e5)
+    {
+        case 0: {
+            (res.val[1])[1] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[1])[1] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[1])[1] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[1])[1] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[1])[1] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[1])[1] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[1])[1] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[1])[1] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[1])[1] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[1])[1] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[1])[1] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[1])[1] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[1])[1] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[1])[1] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[1])[1] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[1])[1] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[1])[1] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e6)
+    {
+        case 0: {
+            (res.val[1])[2] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[1])[2] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[1])[2] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[1])[2] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[1])[2] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[1])[2] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[1])[2] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[1])[2] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[1])[2] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[1])[2] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[1])[2] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[1])[2] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[1])[2] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[1])[2] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[1])[2] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[1])[2] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[1])[2] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e7)
+    {
+        case 0: {
+            (res.val[1])[3] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[1])[3] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[1])[3] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[1])[3] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[1])[3] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[1])[3] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[1])[3] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[1])[3] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[1])[3] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[1])[3] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[1])[3] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[1])[3] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[1])[3] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[1])[3] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[1])[3] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[1])[3] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[1])[3] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e8)
+    {
+        case 0: {
+            (res.val[2])[0] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[2])[0] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[2])[0] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[2])[0] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[2])[0] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[2])[0] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[2])[0] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[2])[0] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[2])[0] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[2])[0] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[2])[0] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[2])[0] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[2])[0] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[2])[0] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[2])[0] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[2])[0] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[2])[0] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e9)
+    {
+        case 0: {
+            (res.val[2])[1] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[2])[1] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[2])[1] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[2])[1] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[2])[1] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[2])[1] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[2])[1] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[2])[1] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[2])[1] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[2])[1] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[2])[1] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[2])[1] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[2])[1] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[2])[1] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[2])[1] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[2])[1] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[2])[1] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e10)
+    {
+        case 0: {
+            (res.val[2])[2] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[2])[2] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[2])[2] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[2])[2] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[2])[2] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[2])[2] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[2])[2] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[2])[2] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[2])[2] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[2])[2] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[2])[2] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[2])[2] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[2])[2] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[2])[2] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[2])[2] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[2])[2] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[2])[2] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e11)
+    {
+        case 0: {
+            (res.val[2])[3] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[2])[3] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[2])[3] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[2])[3] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[2])[3] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[2])[3] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[2])[3] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[2])[3] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[2])[3] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[2])[3] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[2])[3] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[2])[3] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[2])[3] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[2])[3] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[2])[3] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[2])[3] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[2])[3] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e12)
+    {
+        case 0: {
+            (res.val[3])[0] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[3])[0] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[3])[0] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[3])[0] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[3])[0] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[3])[0] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[3])[0] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[3])[0] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[3])[0] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[3])[0] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[3])[0] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[3])[0] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[3])[0] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[3])[0] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[3])[0] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[3])[0] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[3])[0] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e13)
+    {
+        case 0: {
+            (res.val[3])[1] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[3])[1] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[3])[1] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[3])[1] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[3])[1] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[3])[1] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[3])[1] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[3])[1] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[3])[1] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[3])[1] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[3])[1] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[3])[1] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[3])[1] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[3])[1] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[3])[1] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[3])[1] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[3])[1] = (a.val[4])[0];
+            break;
+        }
+    }
+
+    switch(e14)
+    {
+        case 0: {
+            (res.val[3])[2] = (a.val[0])[0];
+            break;
+        }
+        case 1: {
+            (res.val[3])[2] = (a.val[0])[1];
+            break;
+        }
+        case 2: {
+            (res.val[3])[2] = (a.val[0])[2];
+            break;
+        }
+        case 3: {
+            (res.val[3])[2] = (a.val[0])[3];
+            break;
+        }
+        case 4: {
+            (res.val[3])[2] = (a.val[1])[0];
+            break;
+        }
+        case 5: {
+            (res.val[3])[2] = (a.val[1])[1];
+            break;
+        }
+        case 6: {
+            (res.val[3])[2] = (a.val[1])[2];
+            break;
+        }
+        case 7: {
+            (res.val[3])[2] = (a.val[1])[3];
+            break;
+        }
+        case 8: {
+            (res.val[3])[2] = (a.val[2])[0];
+            break;
+        }
+        case 9: {
+            (res.val[3])[2] = (a.val[2])[1];
+            break;
+        }
+        case 10: {
+            (res.val[3])[2] = (a.val[2])[2];
+            break;
+        }
+        case 11: {
+            (res.val[3])[2] = (a.val[2])[3];
+            break;
+        }
+        case 12: {
+            (res.val[3])[2] = (a.val[3])[0];
+            break;
+        }
+        case 13: {
+            (res.val[3])[2] = (a.val[3])[1];
+            break;
+        }
+        case 14: {
+            (res.val[3])[2] = (a.val[3])[2];
+            break;
+        }
+        case 15: {
+            (res.val[3])[2] = (a.val[3])[3];
+            break;
+        }
+        default: {
+            (res.val[3])[2] = (a.val[4])[0];
+            break;
+        }
+    }    
