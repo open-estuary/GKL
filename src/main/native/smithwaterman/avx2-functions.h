@@ -79,7 +79,6 @@
    (__m256i)_mm256_blendv_epi32(__v1, __v2, __mask)
 #endif
 
-
 #define VEC_PERMUTE2x128_EVEN(__v1, __v2) \
     _mm256_permute2f128_si256(__v1, __v2, 0x20)    
 
