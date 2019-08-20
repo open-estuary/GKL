@@ -3238,3 +3238,1078 @@ FORCE_INLINE __mmask8 _mm512_test_epi64_mask(__m512i a, __m512i b)
 
     return (__mmask8)res;
 }
+//Compute the bitwise AND of packed 64-bit integers in a and b, producing intermediate 32-bit values, and set the corresponding bit in result mask k if the intermediate value is non-zero.
+FORCE_INLINE __mmask16 _mm512_test_epi32_mask(__m512i a, __m512i b)
+{
+    int16_t res = 0x0000;
+    int32x4x4_t resand;
+ 
+    resand.val[0] = vandq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    resand.val[1] = vandq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+    resand.val[2] = vandq_s32((int32x4_t)a.val[2], (int32x4_t)b.val[2]);
+    resand.val[3] = vandq_s32((int32x4_t)a.val[3], (int32x4_t)b.val[3]);
+
+    if (vgetq_lane_s32(resand.val[0], 0) != 0) res = res | 0x0001;
+
+    if (vgetq_lane_s32(resand.val[0], 1) != 0) res = res | 0x0002;
+
+    if (vgetq_lane_s32(resand.val[0], 2) != 0) res = res | 0x0004;
+
+    if (vgetq_lane_s32(resand.val[0], 3) != 0) res = res | 0x0008;
+
+    if (vgetq_lane_s32(resand.val[1], 0) != 0) res = res | 0x0010;
+
+    if (vgetq_lane_s32(resand.val[1], 1) != 0) res = res | 0x0020;
+
+    if (vgetq_lane_s32(resand.val[1], 2) != 0) res = res | 0x0040;
+
+    if (vgetq_lane_s32(resand.val[1], 3) != 0) res = res | 0x0080;
+
+    if (vgetq_lane_s32(resand.val[2], 0) != 0) res = res | 0x0100;
+
+    if (vgetq_lane_s32(resand.val[2], 1) != 0) res = res | 0x0200;
+
+    if (vgetq_lane_s32(resand.val[2], 2) != 0) res = res | 0x0400;
+
+    if (vgetq_lane_s32(resand.val[2], 3) != 0) res = res | 0x0800;
+
+    if (vgetq_lane_s32(resand.val[3], 0) != 0) res = res | 0x1000;
+
+    if (vgetq_lane_s32(resand.val[3], 1) != 0) res = res | 0x2000;
+
+    if (vgetq_lane_s32(resand.val[3], 2) != 0) res = res | 0x4000;
+
+    if (vgetq_lane_s32(resand.val[3], 3) != 0) res = res | 0x8000;
+
+    return (__mmask16)res;
+}
+
+// smithwaterman ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//256////////////////
+//Allocate size bytes of memory, aligned to the alignment specified in align, and return a pointer to the allocated memory.
+#ifndef _MM_MALLOC_H_INCLUDED
+#define _MM_MALLOC_H_INCLUDED
+
+#ifndef __cplusplus
+extern int posix_memalign (void **, size_t, size_t);
+#else
+extern "C" int posix_memalign (void **, size_t, size_t) throw ();
+#endif
+
+FORCE_INLINE void * _mm_malloc(size_t size, size_t alignment)
+{
+    void *ptr;
+    if (alignment == 1)
+        return malloc (size);
+    if (alignment == 2 || (sizeof (void *) == 8 && alignment == 4))
+        alignment = sizeof (void *);
+    if (posix_memalign (&ptr, alignment, size) == 0)
+        return ptr;
+    else
+        return NULL;
+
+    /*//PowerPC64 ELF V2 ABI requires quadword alignment.  
+    size_t vec_align = sizeof (__vector float);
+    //Linux GLIBC malloc alignment is at least 2 X ptr size.  
+    size_t malloc_align = (sizeof (void *) + sizeof (void *));
+    void *ptr;
+
+    if (alignment == malloc_align && alignment == vec_align)
+        return malloc (size);
+    if (alignment < vec_align)
+        alignment = vec_align;
+    if (posix_memalign (&ptr, alignment, size) == 0)
+        return ptr;
+    else
+        return NULL;*/
+
+}
+
+FORCE_INLINE void _mm_free(void * ptr)
+{
+    free (ptr);
+}
+
+#endif
+
+//Store 256-bits of integer data from a into memory using a non-temporal memory hint.
+FORCE_INLINE void _mm256_stream_si256(__m256i *mem_addr, __m256i a)
+{
+    //*mem_addr = a;
+    //vst2q_s32((int32_t*) mem_addr, (int32x4x2_t)a);
+    vst1q_s32((int32_t*) mem_addr, a.val[0]);
+    vst1q_s32(((int32_t*) mem_addr) + 4, a.val[1]);
+}
+
+//Convert packed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst.
+FORCE_INLINE __m256i _mm256_packs_epi32(__m256i a, __m256i b)
+{
+    int32x4x2_t res;
+
+    res.val[0] = (int32x4_t)vcombine_s16(vqmovn_s32(a.val[0]), vqmovn_s32(b.val[0]));
+    res.val[1] = (int32x4_t)vcombine_s16(vqmovn_s32(a.val[1]), vqmovn_s32(b.val[1]));
+
+    return (__m256i)res;
+}
+
+FORCE_INLINE __m128i SELECT4(__m256i a, __m256i b, int imm8)
+{
+    int32x4_t res;
+    int imm8_3;
+    imm8_3 = imm8 & 0x00000003;
+
+    switch(imm8_3)
+    {
+        case 0:{
+            res = a.val[0];
+            break;
+        }
+        case 1:{
+            res = a.val[1];
+            break;
+        }
+        case 2:{
+            res = b.val[0];
+            break;
+        }
+        case 3:{
+            res = b.val[1];
+            break;
+        }
+        default:{
+            res = a.val[2];
+            break;
+        }
+    }
+    if ((imm8 & 0x00000008) != 0) res = vdupq_n_s32(0);
+
+    return (__m128i)res;
+}
+
+
+//Shuffle 128-bits (composed of integer data) selected by imm8 from a and b, and store the results in dst.
+FORCE_INLINE __m256i _mm256_permute2f128_si256(__m256i a, __m256i b, int imm8)
+{
+    int32x4x2_t res;
+    int imm8_4;
+    imm8_4 = imm8 >> 4;
+
+    res.val[0] = SELECT4(a, b, imm8);
+    res.val[1] = SELECT4(a, b, imm8_4);
+
+    return (__m256i)res;
+}
+
+// Blend packed single-precision (32-bit) floating-point elements from a and b using mask, and store the results in dst.
+FORCE_INLINE __m256i _mm256_blendv_epi32(__m256i a, __m256i b, __m256i mask)
+{
+    int tmp = 0x80000000;
+    int32x4x2_t res;
+    
+    (res.val[0])[0] = (((int32x4_t)mask.val[0])[0] & tmp) ? ((int32x4_t)b.val[0])[0] : ((int32x4_t)a.val[0])[0];
+    (res.val[0])[1] = (((int32x4_t)mask.val[0])[1] & tmp) ? ((int32x4_t)b.val[0])[1] : ((int32x4_t)a.val[0])[1];
+    (res.val[0])[2] = (((int32x4_t)mask.val[0])[2] & tmp) ? ((int32x4_t)b.val[0])[2] : ((int32x4_t)a.val[0])[2];
+    (res.val[0])[3] = (((int32x4_t)mask.val[0])[3] & tmp) ? ((int32x4_t)b.val[0])[3] : ((int32x4_t)a.val[0])[3];
+    
+    (res.val[1])[0] = (((int32x4_t)mask.val[1])[0] & tmp) ? ((int32x4_t)b.val[1])[0] : ((int32x4_t)a.val[1])[0];
+    (res.val[1])[1] = (((int32x4_t)mask.val[1])[1] & tmp) ? ((int32x4_t)b.val[1])[1] : ((int32x4_t)a.val[1])[1];
+    (res.val[1])[2] = (((int32x4_t)mask.val[1])[2] & tmp) ? ((int32x4_t)b.val[1])[2] : ((int32x4_t)a.val[1])[2];
+    (res.val[1])[3] = (((int32x4_t)mask.val[1])[3] & tmp) ? ((int32x4_t)b.val[1])[3] : ((int32x4_t)a.val[1])[3];
+
+    return (__m256i)res;
+}
+
+//Compute the bitwise AND of 256 bits (representing integer data) in a and b, and store the result in dst.
+FORCE_INLINE __m256i _mm256_and_si256(__m256i a, __m256i b)
+{
+    int32x4x2_t res;
+
+    res.val[0] = vandq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    res.val[1] = vandq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+   
+    return (__m256i)res;
+}
+
+//Compute the bitwise OR of 256 bits (representing integer data) in a and b, and store the result in dst.
+FORCE_INLINE __m256i _mm256_or_si256(__m256i a, __m256i b)
+{
+    int32x4x2_t res;
+
+    res.val[0] = vorrq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    res.val[1] = vorrq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+   
+    return (__m256i)res;
+}
+
+//Compare packed 32-bit integers in a and b for equality, and store the results in dst.
+FORCE_INLINE __m256i _mm256_cmpeq_epi32(__m256i a, __m256i b)
+{
+    int32x4x2_t res;
+
+    res.val[0] = (int32x4_t)vceqq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    res.val[1] = (int32x4_t)vceqq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+
+    return(__m256i)res;
+}
+
+//Store 256-bits of integer data from a into memory. mem_addr does not need to be aligned on any particular boundary.
+FORCE_INLINE void _mm256_storeu_si256(__m256i *mem_addr, __m256i a)
+{
+    //vst2q_s32((int32_t*) mem_addr, (int32x4x2_t)a);
+    vst1q_s32((int32_t*) mem_addr, a.val[0]);
+    vst1q_s32(((int32_t*) mem_addr) + 4, a.val[1]);
+}
+
+//Compute the bitwise NOT of 256 bits (representing integer data) in a and then AND with b, and store the result in dst.
+FORCE_INLINE __m256i _mm256_andnot_si256(__m256i a, __m256i b)
+{
+    int32x4x2_t res;
+
+    res.val[0] = vbicq_s32((int32x4_t)b.val[0], (int32x4_t)a.val[0]);
+    res.val[1] = vbicq_s32((int32x4_t)b.val[1], (int32x4_t)a.val[1]);
+   
+    return (__m256i)res;
+}
+
+//Compare packed 32-bit integers in a and b for greater-than, and store the results in dst.
+FORCE_INLINE __m256i _mm256_cmpgt_epi32(__m256i a, __m256i b)
+{
+    int32x4x2_t res;
+
+    res.val[0] = (int32x4_t)vcgtq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    res.val[1] = (int32x4_t)vcgtq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+
+    return(__m256i)res;
+}
+
+//Compare packed 32-bit integers in a and b, and store packed maximum values in dst.
+FORCE_INLINE __m256i _mm256_max_epi32(__m256i a, __m256i b)
+{
+    int32x4x2_t res;
+
+    res.val[0] = vmaxq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    res.val[1] = vmaxq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+
+    return(__m256i)res;
+}
+
+//Add packed 32-bit integers in a and b, and store the results in dst.
+FORCE_INLINE __m256i _mm256_add_epi32(__m256i a, __m256i b)
+{
+    int32x4x2_t res;
+
+    res.val[0] = vaddq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    res.val[1] = vaddq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+
+    return(__m256i)res;
+}
+
+//Load 256-bits of integer data from memory into dst. mem_addr does not need to be aligned on any particular boundary.
+FORCE_INLINE __m256i _mm256_loadu_si256(const __m256i *mem_addr)
+{
+    int32x4x2_t res;
+
+    res.val[0] = vld1q_s32((int32_t const*)mem_addr);
+    res.val[1] = vld1q_s32((int32_t const*)mem_addr + 4);
+
+    return (__m256i)res;
+    //return (__m256i)vld2q_s32((int32_t*)mem_addr);
+}
+
+//Store 256-bits of integer data from a into memory. mem_addr must be aligned on a 32-byte boundary or a general-protection exception may be generated.
+FORCE_INLINE void _mm256_store_si256(__m256i *mem_addr, __m256i a)
+{
+    //vst2q_s32((int32_t*) mem_addr, (int32x4x2_t)a);
+    vst1q_s32((int32_t*) mem_addr, a.val[0]);
+    vst1q_s32(((int32_t*) mem_addr) + 4, a.val[1]);
+}
+
+//Return vector of type __m256i with all elements set to zero.
+FORCE_INLINE __m256i _mm256_setzero_si256(void)
+{
+    int32x4x2_t res;
+    
+    res.val[0] = vdupq_n_s32(0);
+    res.val[1] = vdupq_n_s32(0);
+   
+    return (__m256i)res;
+}
+
+
+//512 ########################################################################################################################################
+//Store 512-bits of integer data from a into memory using a non-temporal memory hint. mem_addr must be aligned on a 64-byte boundary or a general-protection exception may be generated.
+FORCE_INLINE void _mm512_stream_si512(__m512i *mem_addr, __m512i a)
+{
+    //*mem_addr = a;
+    //vst4q_s32((int32_t*) mem_addr, (int32x4x4_t)a);
+    vst1q_s32((int32_t*) mem_addr, a.val[0]);
+    vst1q_s32(((int32_t*) mem_addr) + 4, a.val[1]);
+    vst1q_s32(((int32_t*) mem_addr) + 8, a.val[2]);
+    vst1q_s32(((int32_t*) mem_addr) + 12, a.val[3]);
+}
+
+//Convert packed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst.
+FORCE_INLINE __m512i _mm512_packs_epi32(__m512i a, __m512i b)
+{
+    int32x4x4_t res;
+
+    res.val[0] = (int32x4_t)vcombine_s16(vqmovn_s32(a.val[0]), vqmovn_s32(b.val[0]));
+    res.val[1] = (int32x4_t)vcombine_s16(vqmovn_s32(a.val[1]), vqmovn_s32(b.val[1]));
+
+    res.val[2] = (int32x4_t)vcombine_s16(vqmovn_s32(a.val[2]), vqmovn_s32(b.val[2]));
+    res.val[3] = (int32x4_t)vcombine_s16(vqmovn_s32(a.val[3]), vqmovn_s32(b.val[3]));
+
+    return (__m512i)res;
+}
+
+//Compute the bitwise AND of 512 bits (representing integer data) in a and b, and store the result in dst.
+FORCE_INLINE __m512i _mm512_and_si512(__m512i a, __m512i b)
+{
+    int32x4x4_t res;
+
+    res.val[0] = vandq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    res.val[1] = vandq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+
+    res.val[2] = vandq_s32((int32x4_t)a.val[2], (int32x4_t)b.val[2]);
+    res.val[3] = vandq_s32((int32x4_t)a.val[3], (int32x4_t)b.val[3]);
+   
+    return (__m512i)res;
+}
+
+//Compute the bitwise OR of 512 bits (representing integer data) in a and b, and store the result in dst.
+FORCE_INLINE __m512i _mm512_or_si512(__m512i a, __m512i b)
+{
+    int32x4x4_t res;
+
+    res.val[0] = vorrq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    res.val[1] = vorrq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+
+    res.val[2] = vorrq_s32((int32x4_t)a.val[2], (int32x4_t)b.val[2]);
+    res.val[3] = vorrq_s32((int32x4_t)a.val[3], (int32x4_t)b.val[3]);
+   
+    return (__m512i)res;
+}
+
+//Store 256-bits of integer data from a into memory. mem_addr does not need to be aligned on any particular boundary.
+FORCE_INLINE void _mm512_storeu_si512(void *mem_addr, __m512i a)
+{
+    //vst4q_s32((int32_t*) mem_addr, (int32x4x4_t)a);
+    vst1q_s32((int32_t*) mem_addr, a.val[0]);
+    vst1q_s32(((int32_t*) mem_addr) + 4, a.val[1]);
+    vst1q_s32(((int32_t*) mem_addr) + 8, a.val[2]);
+    vst1q_s32(((int32_t*) mem_addr) + 12, a.val[3]);
+}
+
+//Compute the bitwise NOT of 512 bits (representing integer data) in a and then AND with b, and store the result in dst.
+FORCE_INLINE __m512i _mm512_andnot_si512(__m512i a, __m512i b)
+{
+    int32x4x4_t res;
+
+    res.val[0] = vbicq_s32((int32x4_t)b.val[0], (int32x4_t)a.val[0]);
+    res.val[1] = vbicq_s32((int32x4_t)b.val[1], (int32x4_t)a.val[1]);
+
+    res.val[2] = vbicq_s32((int32x4_t)b.val[2], (int32x4_t)a.val[2]);
+    res.val[3] = vbicq_s32((int32x4_t)b.val[3], (int32x4_t)a.val[3]);
+   
+    return (__m512i)res;
+}
+
+//Compare packed 32-bit integers in a and b, and store packed maximum values in dst.
+FORCE_INLINE __m512i _mm512_max_epi32(__m512i a, __m512i b)
+{
+    int32x4x4_t res;
+
+    res.val[0] = vmaxq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    res.val[1] = vmaxq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+
+    res.val[2] = vmaxq_s32((int32x4_t)a.val[2], (int32x4_t)b.val[2]);
+    res.val[3] = vmaxq_s32((int32x4_t)a.val[3], (int32x4_t)b.val[3]);
+
+    return(__m512i)res;
+}
+
+//Add packed 32-bit integers in a and b, and store the results in dst.
+FORCE_INLINE __m512i _mm512_add_epi32(__m512i a, __m512i b)
+{
+    int32x4x4_t res;
+
+    res.val[0] = vaddq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+    res.val[1] = vaddq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+
+    res.val[2] = vaddq_s32((int32x4_t)a.val[2], (int32x4_t)b.val[2]);
+    res.val[3] = vaddq_s32((int32x4_t)a.val[3], (int32x4_t)b.val[3]);
+
+    return(__m512i)res;
+}
+
+//Load 512-bits of integer data from memory into dst. mem_addr does not need to be aligned on any particular boundary.
+FORCE_INLINE __m512i _mm512_loadu_si512(const __m512i *mem_addr)
+{
+    //return (__m512i)vld4q_s32((int32_t*)mem_addr);
+    int32x4x4_t res;
+
+    res.val[0] = vld1q_s32((int32_t const*)mem_addr);
+    res.val[1] = vld1q_s32((int32_t const*)mem_addr + 4);
+    res.val[2] = vld1q_s32((int32_t const*)mem_addr + 8);
+    res.val[3] = vld1q_s32((int32_t const*)mem_addr + 12);
+
+    return (__m512i)res;
+}
+
+//Store 512-bits of integer data from a into memory. mem_addr must be aligned on a 64-byte boundary or a general-protection exception may be generated.
+FORCE_INLINE void _mm512_store_si512(void *mem_addr, __m512i a)
+{
+    //vst4q_s32((int32_t*) mem_addr, (int32x4x4_t)a);
+    vst1q_s32((int32_t*) mem_addr, a.val[0]);
+    vst1q_s32(((int32_t*) mem_addr) + 4, a.val[1]);
+    vst1q_s32(((int32_t*) mem_addr) + 8, a.val[2]);
+    vst1q_s32(((int32_t*) mem_addr) + 12, a.val[3]);
+}
+
+//Return vector of type __m512i with all elements set to zero.
+FORCE_INLINE __m512i _mm512_setzero_si512(void)
+{
+    int32x4x4_t res;
+    
+    res.val[0] = vdupq_n_s32(0);
+    res.val[1] = vdupq_n_s32(0);
+
+    res.val[2] = vdupq_n_s32(0);
+    res.val[3] = vdupq_n_s32(0);
+   
+    return (__m512i)res;
+}
+
+//Set each packed 32-bit integer in dst to all ones or all zeros based on the value of the corresponding bit in k.
+FORCE_INLINE __m512i _mm512_movm_epi32(__mmask16 k)
+{
+    int32x4x4_t res;
+
+    (res.val[0])[0] = ((k & 0x0001) == 0) ? 0 : 0xffffffff;
+    (res.val[0])[1] = ((k & 0x0002) == 0) ? 0 : 0xffffffff;
+    (res.val[0])[2] = ((k & 0x0004) == 0) ? 0 : 0xffffffff;
+    (res.val[0])[3] = ((k & 0x0008) == 0) ? 0 : 0xffffffff;
+
+    (res.val[1])[0] = ((k & 0x0010) == 0) ? 0 : 0xffffffff;
+    (res.val[1])[1] = ((k & 0x0020) == 0) ? 0 : 0xffffffff;
+    (res.val[1])[2] = ((k & 0x0040) == 0) ? 0 : 0xffffffff;
+    (res.val[1])[3] = ((k & 0x0080) == 0) ? 0 : 0xffffffff;
+
+    (res.val[2])[0] = ((k & 0x0100) == 0) ? 0 : 0xffffffff;
+    (res.val[2])[1] = ((k & 0x0200) == 0) ? 0 : 0xffffffff;
+    (res.val[2])[2] = ((k & 0x0400) == 0) ? 0 : 0xffffffff;
+    (res.val[2])[3] = ((k & 0x0800) == 0) ? 0 : 0xffffffff;
+
+    (res.val[3])[0] = ((k & 0x1000) == 0) ? 0 : 0xffffffff;
+    (res.val[3])[1] = ((k & 0x2000) == 0) ? 0 : 0xffffffff;
+    (res.val[3])[2] = ((k & 0x4000) == 0) ? 0 : 0xffffffff;
+    (res.val[3])[3] = ((k & 0x8000) == 0) ? 0 : 0xffffffff;
+   
+    return (__m512i)res;
+}
+
+//Compare packed 32-bit integers in a and b for greater-than, and store the results in mask vector k.
+FORCE_INLINE __mmask16 _mm512_cmpgt_epi32_mask(__m512i a, __m512i b)
+{
+    __mmask16 res;
+    res = 0x0000;
+
+    if (((int32x4_t)a.val[0])[0] > ((int32x4_t)b.val[0])[0]) res = res | 0x0001;
+    if (((int32x4_t)a.val[0])[1] > ((int32x4_t)b.val[0])[1]) res = res | 0x0002;
+    if (((int32x4_t)a.val[0])[2] > ((int32x4_t)b.val[0])[2]) res = res | 0x0004;
+    if (((int32x4_t)a.val[0])[3] > ((int32x4_t)b.val[0])[3]) res = res | 0x0008;
+
+    if (((int32x4_t)a.val[1])[0] > ((int32x4_t)b.val[1])[0]) res = res | 0x0010;
+    if (((int32x4_t)a.val[1])[1] > ((int32x4_t)b.val[1])[1]) res = res | 0x0020;
+    if (((int32x4_t)a.val[1])[2] > ((int32x4_t)b.val[1])[2]) res = res | 0x0040;
+    if (((int32x4_t)a.val[1])[3] > ((int32x4_t)b.val[1])[3]) res = res | 0x0080;
+
+    if (((int32x4_t)a.val[2])[0] > ((int32x4_t)b.val[2])[0]) res = res | 0x0100;
+    if (((int32x4_t)a.val[2])[1] > ((int32x4_t)b.val[2])[1]) res = res | 0x0200;
+    if (((int32x4_t)a.val[2])[2] > ((int32x4_t)b.val[2])[2]) res = res | 0x0400;
+    if (((int32x4_t)a.val[2])[3] > ((int32x4_t)b.val[2])[3]) res = res | 0x0800;
+
+    if (((int32x4_t)a.val[3])[0] > ((int32x4_t)b.val[3])[0]) res = res | 0x1000;
+    if (((int32x4_t)a.val[3])[1] > ((int32x4_t)b.val[3])[1]) res = res | 0x2000;
+    if (((int32x4_t)a.val[3])[2] > ((int32x4_t)b.val[3])[2]) res = res | 0x4000;
+    if (((int32x4_t)a.val[3])[3] > ((int32x4_t)b.val[3])[3]) res = res | 0x8000;
+
+
+    return (__mmask16)res;
+}
+
+//Compare packed 32-bit integers in a and b for equality, and store the results in mask vector k.
+FORCE_INLINE __mmask16 _mm512_cmpeq_epi32_mask(__m512i a, __m512i b)
+{
+    __mmask16 res;
+    res = 0x0000;
+
+    if (((int32x4_t)a.val[0])[0] == ((int32x4_t)b.val[0])[0]) res = res | 0x0001;
+    if (((int32x4_t)a.val[0])[1] == ((int32x4_t)b.val[0])[1]) res = res | 0x0002;
+    if (((int32x4_t)a.val[0])[2] == ((int32x4_t)b.val[0])[2]) res = res | 0x0004;
+    if (((int32x4_t)a.val[0])[3] == ((int32x4_t)b.val[0])[3]) res = res | 0x0008;
+
+    if (((int32x4_t)a.val[1])[0] == ((int32x4_t)b.val[1])[0]) res = res | 0x0010;
+    if (((int32x4_t)a.val[1])[1] == ((int32x4_t)b.val[1])[1]) res = res | 0x0020;
+    if (((int32x4_t)a.val[1])[2] == ((int32x4_t)b.val[1])[2]) res = res | 0x0040;
+    if (((int32x4_t)a.val[1])[3] == ((int32x4_t)b.val[1])[3]) res = res | 0x0080;
+
+    if (((int32x4_t)a.val[2])[0] == ((int32x4_t)b.val[2])[0]) res = res | 0x0100;
+    if (((int32x4_t)a.val[2])[1] == ((int32x4_t)b.val[2])[1]) res = res | 0x0200;
+    if (((int32x4_t)a.val[2])[2] == ((int32x4_t)b.val[2])[2]) res = res | 0x0400;
+    if (((int32x4_t)a.val[2])[3] == ((int32x4_t)b.val[2])[3]) res = res | 0x0800;
+
+    if (((int32x4_t)a.val[3])[0] == ((int32x4_t)b.val[3])[0]) res = res | 0x1000;
+    if (((int32x4_t)a.val[3])[1] == ((int32x4_t)b.val[3])[1]) res = res | 0x2000;
+    if (((int32x4_t)a.val[3])[2] == ((int32x4_t)b.val[3])[2]) res = res | 0x4000;
+    if (((int32x4_t)a.val[3])[3] == ((int32x4_t)b.val[3])[3]) res = res | 0x8000;
+
+
+    return (__mmask16)res;
+}
+
+//Blend packed 32-bit integers from a and b using control mask k, and store the results in dst.
+FORCE_INLINE __m512i _mm512_mask_blend_epi32(__mmask16 k, __m512i a, __m512i b)
+{
+    int32x4x4_t res;
+
+    (res.val[0])[0] = (k & 0x0001) ? ((int32x4_t)b.val[0])[0] : ((int32x4_t)a.val[0])[0];
+    (res.val[0])[1] = (k & 0x0002) ? ((int32x4_t)b.val[0])[1] : ((int32x4_t)a.val[0])[1];
+    (res.val[0])[2] = (k & 0x0004) ? ((int32x4_t)b.val[0])[2] : ((int32x4_t)a.val[0])[2];
+    (res.val[0])[3] = (k & 0x0008) ? ((int32x4_t)b.val[0])[3] : ((int32x4_t)a.val[0])[3];
+
+    (res.val[1])[0] = (k & 0x0010) ? ((int32x4_t)b.val[1])[0] : ((int32x4_t)a.val[1])[0];
+    (res.val[1])[1] = (k & 0x0020) ? ((int32x4_t)b.val[1])[1] : ((int32x4_t)a.val[1])[1];
+    (res.val[1])[2] = (k & 0x0040) ? ((int32x4_t)b.val[1])[2] : ((int32x4_t)a.val[1])[2];
+    (res.val[1])[3] = (k & 0x0080) ? ((int32x4_t)b.val[1])[3] : ((int32x4_t)a.val[1])[3];
+
+    (res.val[2])[0] = (k & 0x0100) ? ((int32x4_t)b.val[2])[0] : ((int32x4_t)a.val[2])[0];
+    (res.val[2])[1] = (k & 0x0200) ? ((int32x4_t)b.val[2])[1] : ((int32x4_t)a.val[2])[1];
+    (res.val[2])[2] = (k & 0x0400) ? ((int32x4_t)b.val[2])[2] : ((int32x4_t)a.val[2])[2];
+    (res.val[2])[3] = (k & 0x0800) ? ((int32x4_t)b.val[2])[3] : ((int32x4_t)a.val[2])[3];
+
+    (res.val[3])[0] = (k & 0x1000) ? ((int32x4_t)b.val[3])[0] : ((int32x4_t)a.val[3])[0];
+    (res.val[3])[1] = (k & 0x2000) ? ((int32x4_t)b.val[3])[1] : ((int32x4_t)a.val[3])[1];
+    (res.val[3])[2] = (k & 0x4000) ? ((int32x4_t)b.val[3])[2] : ((int32x4_t)a.val[3])[2];
+    (res.val[3])[3] = (k & 0x8000) ? ((int32x4_t)b.val[3])[3] : ((int32x4_t)a.val[3])[3];
+
+    return (__m512i)res;
+}
+
+//Shuffle 32-bit integers in a and b across lanes using the corresponding selector and index in idx, and store the results in dst.
+FORCE_INLINE __m512i _mm512_permutex2var_epi32(__m512i a, __m512i idx, __m512i b)
+{
+    int32x4x4_t res;
+
+    //res = a;
+    int32_t e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15;
+
+    e0 = vgetq_lane_s32((int32x4_t)idx.val[0], 0);
+    e1 = vgetq_lane_s32((int32x4_t)idx.val[0], 1);
+    e2 = vgetq_lane_s32((int32x4_t)idx.val[0], 2);
+    e3 = vgetq_lane_s32((int32x4_t)idx.val[0], 3);
+
+    e4 = vgetq_lane_s32((int32x4_t)idx.val[1], 0);
+    e5 = vgetq_lane_s32((int32x4_t)idx.val[1], 1);
+    e6 = vgetq_lane_s32((int32x4_t)idx.val[1], 2);
+    e7 = vgetq_lane_s32((int32x4_t)idx.val[1], 3);
+
+    e8 = vgetq_lane_s32((int32x4_t)idx.val[2], 0);
+    e9 = vgetq_lane_s32((int32x4_t)idx.val[2], 1);
+    e10 = vgetq_lane_s32((int32x4_t)idx.val[2], 2);
+    e11 = vgetq_lane_s32((int32x4_t)idx.val[2], 3);
+
+    e12 = vgetq_lane_s32((int32x4_t)idx.val[3], 0);
+    e13 = vgetq_lane_s32((int32x4_t)idx.val[3], 1);
+    e14 = vgetq_lane_s32((int32x4_t)idx.val[3], 2);
+    e15 = vgetq_lane_s32((int32x4_t)idx.val[3], 3);
+
+    switch((e0 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[0])[0] = (e0 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e1 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[0])[1] = (e1 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e2 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[0])[2] = (e2 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e3 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[0])[3] = (e3 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e4 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[1])[0] = (e4 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e5 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[1])[1] = (e5 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e6 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[1])[2] = (e6 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
