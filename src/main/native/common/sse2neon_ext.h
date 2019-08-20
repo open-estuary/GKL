@@ -4313,3 +4313,692 @@ FORCE_INLINE __m512i _mm512_permutex2var_epi32(__m512i a, __m512i idx, __m512i b
         default :
               break;
     }
+    switch((e7 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[1])[3] = (e7 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e8 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[2])[0] = (e8 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e9 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[2])[1] = (e9 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e10 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[2])[2] = (e10 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e11 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[2])[3] = (e11 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e12 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[3])[0] = (e12 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e13 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[3])[1] = (e13 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e14 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[3])[2] = (e14 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+    switch((e15 & 0x0000000f))
+    {
+        case 0:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[0])[0] : (b.val[0])[0];
+            break;
+        }
+        case 1:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[0])[1] : (b.val[0])[1];
+            break;
+        }
+        case 2:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[0])[2] : (b.val[0])[2];
+            break;
+        }
+        case 3:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[0])[3] : (b.val[0])[3];
+            break;
+        }
+        case 4:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[1])[0] : (b.val[1])[0];
+            break;
+        }
+        case 5:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[1])[1] : (b.val[1])[1];
+            break;
+        }
+        case 6:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[1])[2] : (b.val[1])[2];
+            break;
+        }
+        case 7:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[1])[3] : (b.val[1])[3];
+            break;
+        }
+        case 8:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[2])[0] : (b.val[2])[0];
+            break;
+        }
+        case 9:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[2])[1] : (b.val[2])[1];
+            break;
+        }
+        case 10:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[2])[2] : (b.val[2])[2];
+            break;
+        }
+        case 11:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[2])[3] : (b.val[2])[3];
+            break;
+        }
+        case 12:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[3])[0] : (b.val[3])[0];
+            break;
+        }
+        case 13:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[3])[1] : (b.val[3])[1];
+            break;
+        }
+        case 14:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[3])[2] : (b.val[3])[2];
+            break;
+        }
+        case 15:{
+            (res.val[3])[3] = (e15 & 0x00000010) == 0 ? (a.val[3])[3] : (b.val[3])[3];
+            break;
+        }
+        default :
+              break;
+    }
+
+
+    return (__m512i)res;
+}
+
+
+//NEON always uses flush-to-zero mode
+#define _MM_FLUSH_ZERO_ON  0x01080000
+#define _MM_FLUSH_ZERO_OFF 0xfef7ffff
+
+FORCE_INLINE void _MM_SET_FLUSH_ZERO_TRUE(void )
+{
+//unsigned long int result;
+__asm__("mrs x6,fpcr\n\t"
+    "ldr x7,=0x01080000\n\t"
+    "orr x6,x6,x7\n\t"
+    "msr fpcr,x6"
+  //   :"=w"(result)
+   );
+}
+
+FORCE_INLINE void _MM_SET_FLUSH_ZERO_FALSE(void)
+{
+__asm__("mrs x6,fpcr\n\t"
+    "ldr x7,=0xfef7ffff\n\t"
+    "and x6,x6,x7\n\t"
+    "msr fpcr,x6"
+   );
+}
+
+FORCE_INLINE void _MM_SET_FLUSH_ZERO_MODE(unsigned int a)
+{
+if(a==0x00840000)
+_MM_SET_FLUSH_ZERO_TRUE;
+
+else if(a==0x0000)
+_MM_SET_FLUSH_ZERO_FALSE;
+
+}
+
+
+FORCE_INLINE int _MM_GET_FLUSH_ZERO_MODE(void)
+{
+//unsigned int a=0x00840000;
+//unsigned int *b=&a;
+unsigned long int  result;
+__asm__ __volatile__("mrs x6,fpcr\n\t"
+        "ldr x7,=0x00840000\n\t"
+        "and x7,x7,x6\n\t"
+       :"=w"(result)
+);
+return result;
+}
+
+#if defined(__GNUC__) || defined(__clang__)
+#       pragma pop_macro("ALIGN_STRUCT")
+#       pragma pop_macro("FORCE_INLINE")
+#endif
+
+#endif
