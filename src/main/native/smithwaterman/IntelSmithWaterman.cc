@@ -36,7 +36,7 @@ if(is_avx512_supported())
     #ifndef __APPLE__
         DBG("Using CPU-supported AVX-512 instructions");
         g_runSWOnePairBT = runSWOnePairBT_fp_avx512;
-
+        //g_runSWOnePairBT = runSWOnePairBT_fp_avx2;
     #else
         assert(false);
     #endif
