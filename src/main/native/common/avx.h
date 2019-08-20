@@ -6,9 +6,15 @@
     #include <intrin.h>
 #else
     // SIMD intrinsics for GCC
-    #include <x86intrin.h>
-    #include <stdint.h>
-    #include <cpuid.h>
+    #ifdef __aarch64__
+        #include "sse2neon.h"
+        #include "sse2neon_ext.h"
+        #include <stdint.h>
+    #else
+        #include <x86intrin.h>
+        #include <stdint.h>
+        #include <cpuid.h>
+    #endif
 #endif
 
 // helper function
@@ -39,6 +45,28 @@ int check_xcr0_zmm()
     /* check if xmm, zmm and zmm state are enabled in XCR0 */
     return ((xcr0 & zmm_ymm_xmm) == zmm_ymm_xmm);
 }
+#ifdef __aarch64__  //ARM
+ 
+inline
+bool is_avx_supported()
+{
+    return true;
+}
+
+inline
+bool is_avx2_supported()
+{
+    return true;
+}
+
+inline
+bool is_avx512_supported()
+{
+    return false;
+}
+
+#else 
+
 
 /*
  * Determine if AVX is supported. Returns true if supported.
@@ -137,6 +165,6 @@ bool is_avx512_supported()
     return false;
 #endif
 }
-
+#endif
 #endif
 
