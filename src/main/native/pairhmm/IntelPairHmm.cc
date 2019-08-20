@@ -25,6 +25,7 @@ Context<double> g_ctxd;
 
 float (*g_compute_full_prob_float)(testcase *tc);
 double (*g_compute_full_prob_double)(testcase *tc);
+#define DEBUG
 
 /*
  * Class:     com_intel_gkl_pairhmm_IntelPairHmm
