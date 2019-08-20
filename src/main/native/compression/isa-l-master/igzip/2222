@@ -1,0 +1,1366 @@
+		switch(sel){
+			case 0x00:
+				res_mask = 0;
+				for(i = 0; i < upperbound; i++)
+					res_mask |= (((bool_res_mask[i])? 1 : 0) << i);
+				break;
+			case 0x04:
+				res_mask = 0;
+				for(i = 0; i < upperbound; i++){
+					for(j = 0; j < upperbound; j += 2){
+						if((bool_res_mask[i] >> j & 0x11) == 0x11){
+							res_mask |= (1 << i);
+							break;
+						}
+					}
+				}
+				break;
+			case 0x08:
+				res_mask = 0;
+				for(i = 0; i < upperbound; i++)
+					res_mask |= (bool_res_mask[i] >> i & 0x01) << i;
+				break;
+			case 0x0c:
+				res_mask = 0xffff;
+				for(i = 0; i < upperbound; i++){
+					k = i;
+					for(j = 0; j < upperbound - i; j++){
+						if(!((bool_res_mask[j] >> k) & 0x01)){
+							res_mask &= (~(1 << i));
+							break;
+						}	
+						k++;
+					}
+				}
+				break;
+        	}
+		
+		res2_mask = res_mask;
+		if(negative_mask == 0x10)
+			//res2_mask = 0xffff;
+			res2_mask = ~res2_mask;
+		if(negative_mask == 0x30)
+			//res2_mask |= (0xffff >> (upperbound - lb));
+			res2_mask ^= (0xffff >> (upperbound - lb));
+		if(imm8 & 0x40){
+			asm volatile("clz %w[wd], %w[wn]" : [wd]"=r"(ans) : [wn]"r"(res2_mask));
+			ans = 31 - ans;
+        }
+        	else{
+			int r_res2_mask;
+			asm volatile("rbit %w[wd], %w[wn]" : [wd]"=r"(r_res2_mask) : [wn]"r"(res2_mask));
+			asm volatile("clz %w[wd], %w[wn]" : [wd]"=r"(ans) : [wn]"r"(r_res2_mask));
+			
+			ans = (ans > 15) ? 16 : ans;
+        }
+	}
+	
+	return (ans >= 0) ? ans : upperbound;
+}
+
+
+// Extract a 64-bit integer from a, selected with imm8, and store the result in dst.
+// imm8 range
+FORCE_INLINE __int64 _mm_extract_epi64(__m128i a, const int imm8)
+{
+	switch(imm8)
+	{
+	case 0:
+		return (__int64)vgetq_lane_s64((int64x2_t)a, 0);
+	case 1:
+		return (__int64)vgetq_lane_s64((int64x2_t)a, 1);
+	default:
+		return (__int64)vgetq_lane_s64((int64x2_t)a, 0);
+	}
+	//int64_t vgetq_lane_s64 (int64x2_t v, const int lane)
+}
+
+// Move the lower double-precision (64-bit) floating-point element from b to the lower element of dst,
+// and copy the upper element from a to the upper element of dst.
+FORCE_INLINE __m128d _mm_move_sd(__m128d a, __m128d b)
+{
+	//float64x2_t vextq_f64 (float64x2_t a, float64x2_t b, const int n)
+	//return (__m128d)vextq_f64((float64x2_t)b, (float64x2_t)a, 1);
+	//return (__m128d)vextq_f64((float64x2_t)a, (float64x2_t)b, 1);
+	float64x2_t res;
+	
+	res[0] = ((float64x2_t)b)[0];
+	res[1] = ((float64x2_t)a)[1];
+	
+	return (__m128d)res;
+	
+}
+
+// Copy a to dst, and insert the 32-bit integer i into dst at the location specified by imm8.
+// test lane range
+FORCE_INLINE __m128i _mm_insert_epi32(__m128i a, int i, const int imm8)
+{
+	// int32x4_t vsetq_lane_s32 (int32_t a, int32x4_t v, const int lane)
+	switch(imm8)
+	{
+		case 0:
+			return vsetq_lane_s32(i, (int32x4_t)a, 0);
+		case 1:
+                        return vsetq_lane_s32(i, (int32x4_t)a, 1);
+		case 2:
+                        return vsetq_lane_s32(i, (int32x4_t)a, 2);
+		case 3:
+                        return vsetq_lane_s32(i, (int32x4_t)a, 3);
+		default:
+                        return vsetq_lane_s32(i, (int32x4_t)a, 0);
+	}
+}
+
+// Shift packed 64-bit integers in a left by imm8 while shifting in zeros, and store the results in dst.
+FORCE_INLINE __m128i _mm_slli_epi64(__m128i a, const int imm8)
+{
+	// int64x2_t vdupq_n_s64 (int64_t value)
+	//if(imm8 > 63 || imm8 < 0)
+		//return (__m128i)vdupq_n_s64((int64_t)0);
+	
+	// int64x2_t vshlq_n_s64 (int64x2_t a, const int n)
+	//return (__m128i)vshlq_n_s64((int64x2_t)a, imm8);
+    switch(imm8)
+    {
+        case 0:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 0);
+        case 1:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 1);
+        case 2:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 2);
+        case 3:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 3);
+        case 4:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 4);
+        case 5:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 5);
+        case 6:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 6);
+        case 7:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 7);
+        case 8:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 8);
+        case 9:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 9);
+        case 10:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 10);
+        case 11:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 11);
+        case 12:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 12);
+        case 13:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 13);
+        case 14:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 14);
+        case 15:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 15);
+        case 16:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 16);
+        case 17:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 17);
+        case 18:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 18);
+        case 19:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 19);
+        case 20:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 20);
+        case 21:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 21);
+        case 22:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 22);
+        case 23:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 23);
+        case 24:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 24);
+        case 25:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 25);
+        case 26:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 26);
+        case 27:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 27);
+        case 28:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 28);
+        case 29:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 29);
+        case 30:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 30);
+        case 31:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 31);
+        case 32:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 32);
+        case 33:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 33);
+        case 34:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 34);
+        case 35:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 35);
+        case 36:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 36);
+        case 37:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 37);
+        case 38:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 38);
+        case 39:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 39);
+        case 40:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 40);
+        case 41:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 41);
+        case 42:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 42);
+        case 43:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 43);
+        case 44:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 44);
+        case 45:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 45);
+        case 46:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 46);
+        case 47:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 47);
+        case 48:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 48);
+        case 49:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 49);
+        case 50:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 50);
+        case 51:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 51);
+        case 52:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 52);
+        case 53:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 53);
+        case 54:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 54);
+        case 55:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 55);
+        case 56:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 56);
+        case 57:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 57);
+        case 58:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 58);
+        case 59:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 59);
+        case 60:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 60);
+        case 61:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 61);
+        case 62:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 62);
+        case 63:
+            return (__m128i)vshlq_n_s64((int64x2_t)a, 63);
+        default:
+            return (__m128i)vdupq_n_s64((int64_t)0);    
+    }
+}
+
+// Move the lower single-precision (32-bit) floating-point element from b to the lower element of dst, 
+// and copy the upper 3 elements from a to the upper elements of dst.
+FORCE_INLINE __m128 _mm_move_ss(__m128 a, __m128 b)
+{
+	//float32x4_t vextq_f32 (float32x4_t a, float32x4_t b, const int n)	
+	//return (__m128)vextq_f32((float32x4_t)a, (float32x4_t)b, 1);
+	float32x4_t res = (float32x4_t)a;
+	
+	res[0] = ((float32x4_t)b)[0];
+	
+	return (__m128)res;
+}
+
+// Return vector of type __m256d with all elements set to zero.
+FORCE_INLINE __m256d _mm256_setzero_pd(void)
+{
+	/*float64_t  ptr[] = {0, 0};
+	 
+	//float64x2x2_t vld2q_dup_f64 (float64_t const * ptr)
+	return (__m256d)vld2q_dup_f64(ptr); 
+	*/
+	float64x2x2_t res;
+
+	(res.val[0])[0] = 0;
+	(res.val[0])[1] = 0;
+	(res.val[1])[0] = 0;
+	(res.val[1])[1] = 0;
+
+	return (__m256d)res;	
+}
+ 
+// Compute the bitwise OR of packed double-precision (64-bit) floating-point elements in a and b, and store the results in dst.
+FORCE_INLINE __m256d _mm256_or_pd(__m256d a, __m256d b)
+{
+	float64x2x2_t res;
+	
+	//int64x2_t  vorrq_s64(int64x2_t a, int64x2_t b);
+	res.val[0] = (float64x2_t)vorrq_s64((int64x2_t)a.val[0], (int64x2_t)b.val[0]);
+	res.val[1] = (float64x2_t)vorrq_s64((int64x2_t)a.val[1], (int64x2_t)b.val[1]);
+	
+	return (__m256d)res;
+}
+
+/*FORCE_INLINE __m256d _mm256_or_pd(__m256d a, __m256d b)
+{
+    float64x2x2_t res;
+    int64x2x2_t resint,aint,bint;
+
+    aint.val[0] = vreinterpretq_s64_f64(a.val[0]);
+    aint.val[1] = vreinterpretq_s64_f64(a.val[1]);
+
+    bint.val[0] = vreinterpretq_s64_f64(b.val[0]);
+    bint.val[1] = vreinterpretq_s64_f64(b.val[1]);
+
+    resint.val[0] = vorrq_s64((int64x2_t)aint.val[0], (int64x2_t)bint.val[0]);
+    resint.val[1] = vorrq_s64((int64x2_t)aint.val[1], (int64x2_t)bint.val[1]);
+
+    res.val[0] = vreinterpretq_f64_s64(resint.val[0]);
+    res.val[1] = vreinterpretq_f64_s64(resint.val[1]);
+
+    return (__m256d)res;
+}*/
+
+// Add packed double-precision (64-bit) floating-point elements in a and b, and store the results in dst.
+FORCE_INLINE __m256d _mm256_add_pd(__m256d a, __m256d b)
+{
+	float64x2x2_t res;
+	
+	//float64x2_t vaddq_f64 (float64x2_t a, float64x2_t b)
+	res.val[0] = vaddq_f64((float64x2_t)a.val[0], (float64x2_t)b.val[0]);
+	res.val[1] = vaddq_f64((float64x2_t)a.val[1], (float64x2_t)b.val[1]);
+	
+	/*(res.val[0])[0] = (a.val[0])[0]+(b.val[0])[0];
+	(res.val[0])[1] = (a.val[0])[1]+(b.val[0])[1];
+	(res.val[1])[0] = (a.val[1])[0]+(b.val[1])[0];
+	(res.val[1])[1] = (a.val[1])[1]+(b.val[1])[1];*/
+
+	return (__m256d)res;
+}
+
+// Subtract packed double-precision (64-bit) floating-point elements in b from packed double-precision (64-bit) floating-point elements in a, and store the results in dst. 
+FORCE_INLINE __m256d _mm256_sub_pd(__m256d a, __m256d b)
+{
+	float64x2x2_t res;
+	
+	//float64x2_t vsubq_f64 (float64x2_t a, float64x2_t b)
+	res.val[0] = vsubq_f64((float64x2_t)a.val[0], (float64x2_t)b.val[0]);
+	res.val[1] = vsubq_f64((float64x2_t)a.val[1], (float64x2_t)b.val[1]);
+	
+	return (__m256d)res;
+}
+ 
+// Multiply packed double-precision (64-bit) floating-point elements in a and b, and store the results in dst.
+// test--overflow
+FORCE_INLINE __m256d _mm256_mul_pd(__m256d a, __m256d b)
+{
+	float64x2x2_t res;
+	
+	//float64x2_t vmulq_f64 (float64x2_t a, float64x2_t b)
+	res.val[0] = vmulq_f64((float64x2_t)a.val[0], (float64x2_t)b.val[0]);
+	res.val[1] = vmulq_f64((float64x2_t)a.val[1], (float64x2_t)b.val[1]);
+	
+	return (__m256d)res;
+}
+ 
+// Divide packed double-precision (64-bit) floating-point elements in a by packed elements in b, and store the results in dst.
+// test--divide 0
+FORCE_INLINE __m256d _mm256_div_pd(__m256d a, __m256d b)
+{
+	float64x2x2_t res;
+
+	// float64x2_t vdivq_f64 (float64x2_t a, float64x2_t b)
+	res.val[0] = vdivq_f64((float64x2_t)a.val[0], (float64x2_t)b.val[0]);
+	res.val[1] = vdivq_f64((float64x2_t)a.val[1], (float64x2_t)b.val[1]);
+
+	return (__m256d)res;
+}
+ 
+// Blend packed double-precision (64-bit) floating-point elements from a and b using control mask imm8, and store the results in dst.
+/* FOR j := 0 to 3
+	i := j*64
+	IF imm8[j%8]
+		dst[i+63:i] := b[i+63:i]
+	ELSE
+		dst[i+63:i] := a[i+63:i]
+	FI
+	ENDFOR */
+//test--performance
+FORCE_INLINE __m256d _mm256_blend_pd(__m256d a, __m256d b, const int imm8)
+{
+	float64x2x2_t res;
+	
+	if(imm8 > 15 || imm8 < 0){
+		printf("%s:%d:%s:error: the last argument must be a 4-bit immediate\n", __FILE__, __LINE__, __FUNCTION__);
+		exit(1);	
+	}
+
+	(res.val[0])[0] = (imm8 & 0x01) ? ((float64x2_t)b.val[0])[0] : ((float64x2_t)a.val[0])[0];
+	(res.val[0])[1] = (imm8 & 0x02) ? ((float64x2_t)b.val[0])[1] : ((float64x2_t)a.val[0])[1];
+	(res.val[1])[0] = (imm8 & 0x04) ? ((float64x2_t)b.val[1])[0] : ((float64x2_t)a.val[1])[0];
+	(res.val[1])[1] = (imm8 & 0x08) ? ((float64x2_t)b.val[1])[1] : ((float64x2_t)a.val[1])[1];
+
+	return (__m256d)res;
+}
+
+// Blend packed double-precision (64-bit) floating-point elements from a and b using mask, and store the results in dst.
+// opt
+FORCE_INLINE __m256d _mm256_blendv_pd(__m256d a, __m256d b, __m256d mask)
+{
+	long long tmp = 0x8000000000000000;
+	float64x2x2_t res;
+
+		
+	(res.val[0])[0] = (((int64x2_t)mask.val[0])[0] & tmp) ? ((float64x2_t)b.val[0])[0] : ((float64x2_t)a.val[0])[0];
+	(res.val[0])[1] = (((int64x2_t)mask.val[0])[1] & tmp) ? ((float64x2_t)b.val[0])[1] : ((float64x2_t)a.val[0])[1];
+	(res.val[1])[0] = (((int64x2_t)mask.val[1])[0] & tmp) ? ((float64x2_t)b.val[1])[0] : ((float64x2_t)a.val[1])[0];
+	(res.val[1])[1] = (((int64x2_t)mask.val[1])[1] & tmp) ? ((float64x2_t)b.val[1])[1] : ((float64x2_t)a.val[1])[1];
+
+	return (__m256d)res;
+}
+ 
+// Casts vector of type __m256d to type __m128d.
+//test--if right
+FORCE_INLINE __m128d _mm256_castpd256_pd128(__m256d a)
+{
+	return (__m128d)a.val[0];
+}
+
+// Extract 128 bits (composed of 2 packed double-precision (64-bit) floating-point elements) from a, selected with imm8, 
+// and store the result in dst.
+// 1、test when imm8 != 0 && imm8 != 1  
+// 2、test when imm8 = 0x xx xx xx 00 || imm8 = 0x xx xx xx 01   
+// 3、if imm8 & 0xff
+FORCE_INLINE __m128d _mm256_extractf128_pd(__m256d a, const int imm8)
+{
+	if(imm8 == 0)
+		return (__m128d)a.val[0];
+	else if(imm8 == 1)
+		return (__m128d)a.val[1];
+	else{
+		printf("%s:%d:%s:error: the last argument must be a 1-bit immediate\n", __FILE__, __LINE__, __FUNCTION__);
+		exit(1);	
+	}
+}
+ 
+// Casts vector of type __m128d to type __m256d; the upper 128 bits of the result are undefined. 
+// This intrinsic is only used for compilation and does not generate any instructions, thus it has zero latency.
+FORCE_INLINE __m256d _mm256_castpd128_pd256(__m128d a)
+{
+	float64x2x2_t res;
+	
+	res.val[0] = (float64x2_t)a;
+	
+	return (__m256d)res;
+}
+ 
+// Copy a to dst, then insert 128 bits (composed of 2 packed double-precision (64-bit) floating-point elements)
+// from b into dst at the location specified by imm8.
+// test
+FORCE_INLINE __m256d _mm256_insertf128_pd(__m256d a, __m128d b, int imm8)
+{
+	float64x2x2_t res = (float64x2x2_t)a;
+	
+	if(imm8 == 0)
+		res.val[0] = (float64x2_t)b;	
+	else if(imm8 == 1)
+		res.val[1] = (float64x2_t)b;
+	else{	
+		printf("%s:%d:%s:error: the last argument must be a 1-bit immediate\n", __FILE__, __LINE__, __FUNCTION__);
+		exit(1);
+	}
+	
+	return (__m256d)res;
+}
+
+// Convert packed 32-bit integers in a to packed double-precision (64-bit) floating-point elements, and store the results in dst.
+// test  Convert_Int32_To_FP64
+FORCE_INLINE __m256d _mm256_cvtepi32_pd(__m128i a)
+{
+	float64x2x2_t res;
+	
+	(res.val[0])[0] = (float64_t)(int64_t)(((int32x4_t)a)[0]);
+	(res.val[0])[1] = (float64_t)(int64_t)(((int32x4_t)a)[1]);
+	(res.val[1])[0] = (float64_t)(int64_t)(((int32x4_t)a)[2]);
+	(res.val[1])[1] = (float64_t)(int64_t)(((int32x4_t)a)[3]);
+	
+	return (__m256d)res;
+	
+	/*float64x1_t tmp[4];
+	
+	//int32_t vgetq_lane_s32 (int32x4_t v, const int lane)
+	tmp[0] = (float64x1_t)_mm_set_pi32(0, vgetq_lane_s32((int32x4_t)a , 0));
+	tmp[1] = (float64x1_t)_mm_set_pi32(0, vgetq_lane_s32((int32x4_t)a , 1));
+	tmp[2] = (float64x1_t)_mm_set_pi32(0, vgetq_lane_s32((int32x4_t)a , 2));
+	tmp[3] = (float64x1_t)_mm_set_pi32(0, vgetq_lane_s32((int32x4_t)a , 3));
+	
+	return _mm256_set_pd(tmp[3], tmp[2], tmp[1], tmp[0]);*/
+}
+ 
+//Broadcast double-precision (64-bit) floating-point value a to all elements of dst.
+//test--performance compare
+FORCE_INLINE __m256d _mm256_set1_pd(double a)
+{
+	//return _mm256_set_pd(a, a, a, a);
+	
+	/*float64_t  ptr[] = {a, a};
+	 
+	//float64x2x2_t vld2q_dup_f64 (float64_t const * ptr)
+	return (__m256d)vld2q_dup_f64(ptr);*/
+	
+	float64x2x2_t res;
+
+	(res.val[0])[0] = a;
+	(res.val[0])[1] = a;
+	(res.val[1])[0] = a;
+	(res.val[1])[1] = a;
+
+	return (__m256d)res;	
+}
+ 
+// Return vector of type __m256 with all elements set to zero.
+FORCE_INLINE __m256 _mm256_setzero_ps(void)
+{
+	/*float  ptr[] = {0, 0, 0, 0};
+	 
+	//float32x4x2_t vld2q_dup_f32 (float32_t const * ptr)
+	return (__m256)vld2q_dup_f32(ptr);*/
+	 
+	float32x4x2_t res;
+	(res.val[0])[0] = 0;
+	(res.val[0])[1] = 0;
+	(res.val[0])[2] = 0;
+	(res.val[0])[3] = 0;
+	(res.val[1])[0] = 0;
+	(res.val[1])[1] = 0;
+	(res.val[1])[2] = 0;
+	(res.val[1])[3] = 0;
+
+	return (__m256)res;	
+}
+ 
+// Compute the bitwise OR of packed single-precision (32-bit) floating-point elements in a and b, and store the results in dst.
+FORCE_INLINE __m256 _mm256_or_ps(__m256 a, __m256 b)
+{
+	float32x4x2_t res;
+	
+	res.val[0] = (float32x4_t)vorrq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+	res.val[1] = (float32x4_t)vorrq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+	
+	return (__m256)res;
+	
+	/*
+	int32x4x2_t res;
+	
+	res.val[0] = vorrq_s32((int32x4_t)a.val[0], (int32x4_t)b.val[0]);
+	res.val[1] = vorrq_s32((int32x4_t)a.val[1], (int32x4_t)b.val[1]);
+	
+	return (__m256)res;
+	*/
+}
+ 
+// Add packed single-precision (32-bit) floating-point elements in a and b, and store the results in dst.
+//test--overflow
+FORCE_INLINE __m256 _mm256_add_ps (__m256 a, __m256 b)
+{
+	float32x4x2_t res;
+	
+	//float32x4_t vaddq_f32 (float32x4_t a, float32x4_t b)
+	res.val[0] = vaddq_f32((float32x4_t)a.val[0], (float32x4_t)b.val[0]);
+	res.val[1] = vaddq_f32((float32x4_t)a.val[1], (float32x4_t)b.val[1]);
+	
+	return (__m256)res;
+}
+
+// Subtract packed single-precision (32-bit) floating-point elements in b from packed single-precision (32-bit) floating-point elements in a, 
+// and store the results in dst.
+// test--underflow
+FORCE_INLINE __m256 _mm256_sub_ps(__m256 a, __m256 b)
+{
+	float32x4x2_t res;
+	
+	// float32x4_t vsubq_f32 (float32x4_t a, float32x4_t b)
+	res.val[0] = vsubq_f32((float32x4_t)a.val[0], (float32x4_t)b.val[0]);
+	res.val[1] = vsubq_f32((float32x4_t)a.val[1], (float32x4_t)b.val[1]);
+	
+	return (__m256)res;
+}
+
+// Multiply packed single-precision (32-bit) floating-point elements in a and b, and store the results in dst.
+// test--overflow
+FORCE_INLINE __m256 _mm256_mul_ps(__m256 a, __m256 b)
+{
+	float32x4x2_t res;
+	
+	// float32x4_t vmulq_f32 (float32x4_t a, float32x4_t b)
+	res.val[0] = vmulq_f32((float32x4_t)a.val[0], (float32x4_t)b.val[0]);
+	res.val[1] = vmulq_f32((float32x4_t)a.val[1], (float32x4_t)b.val[1]);
+	
+	return (__m256)res;
+}
+
+// Divide packed single-precision (32-bit) floating-point elements in a by packed elements in b, and store the results in dst.
+// test x/0 overflow
+FORCE_INLINE __m256 _mm256_div_ps(__m256 a, __m256 b)
+{
+	float32x4x2_t res;
+	
+	// float32x4_t vdivq_f32 (float32x4_t a, float32x4_t b)
+	res.val[0] = vdivq_f32((float32x4_t)a.val[0], (float32x4_t)b.val[0]);
+	res.val[1] = vdivq_f32((float32x4_t)a.val[1], (float32x4_t)b.val[1]);
+	
+	return (__m256)res;
+}
+
+// Blend packed single-precision (32-bit) floating-point elements from a and b using control mask imm8, 
+// and store the results in dst.
+FORCE_INLINE __m256 _mm256_blend_ps(__m256 a, __m256 b, const int imm8)
+{
+	float32x4x2_t res;
+	
+	if(imm8 > 255 || imm8 < 0){
+		printf("%s:%d:%s:error: the last argument must be a 8-bit immediate\n", __FILE__, __LINE__, __FUNCTION__);
+		exit(1);	
+	}
+
+	(res.val[0])[0] = (imm8 & 0x01) ? ((float32x4_t)b.val[0])[0] : ((float32x4_t)a.val[0])[0];
+	(res.val[0])[1] = (imm8 & 0x02) ? ((float32x4_t)b.val[0])[1] : ((float32x4_t)a.val[0])[1];
+	(res.val[0])[2] = (imm8 & 0x04) ? ((float32x4_t)b.val[0])[2] : ((float32x4_t)a.val[0])[2];
+	(res.val[0])[3] = (imm8 & 0x08) ? ((float32x4_t)b.val[0])[3] : ((float32x4_t)a.val[0])[3];
+
+	(res.val[1])[0] = (imm8 & 0x10) ? ((float32x4_t)b.val[1])[0] : ((float32x4_t)a.val[1])[0];
+	(res.val[1])[1] = (imm8 & 0x20) ? ((float32x4_t)b.val[1])[1] : ((float32x4_t)a.val[1])[1];
+	(res.val[1])[2] = (imm8 & 0x40) ? ((float32x4_t)b.val[1])[2] : ((float32x4_t)a.val[1])[2];
+	(res.val[1])[3] = (imm8 & 0x80) ? ((float32x4_t)b.val[1])[3] : ((float32x4_t)a.val[1])[3];
+
+	return (__m256)res;
+}
+
+// Blend packed single-precision (32-bit) floating-point elements from a and b using mask, and store the results in dst.
+FORCE_INLINE __m256 _mm256_blendv_ps(__m256 a, __m256 b, __m256 mask)
+{
+	int tmp = 0x80000000;
+	float32x4x2_t res;
+	
+	(res.val[0])[0] = (((int32x4_t)mask.val[0])[0] & tmp) ? ((float32x4_t)b.val[0])[0] : ((float32x4_t)a.val[0])[0];
+	(res.val[0])[1] = (((int32x4_t)mask.val[0])[1] & tmp) ? ((float32x4_t)b.val[0])[1] : ((float32x4_t)a.val[0])[1];
+	(res.val[0])[2] = (((int32x4_t)mask.val[0])[2] & tmp) ? ((float32x4_t)b.val[0])[2] : ((float32x4_t)a.val[0])[2];
+	(res.val[0])[3] = (((int32x4_t)mask.val[0])[3] & tmp) ? ((float32x4_t)b.val[0])[3] : ((float32x4_t)a.val[0])[3];
+	
+	(res.val[1])[0] = (((int32x4_t)mask.val[1])[0] & tmp) ? ((float32x4_t)b.val[1])[0] : ((float32x4_t)a.val[1])[0];
+	(res.val[1])[1] = (((int32x4_t)mask.val[1])[1] & tmp) ? ((float32x4_t)b.val[1])[1] : ((float32x4_t)a.val[1])[1];
+	(res.val[1])[2] = (((int32x4_t)mask.val[1])[2] & tmp) ? ((float32x4_t)b.val[1])[2] : ((float32x4_t)a.val[1])[2];
+	(res.val[1])[3] = (((int32x4_t)mask.val[1])[3] & tmp) ? ((float32x4_t)b.val[1])[3] : ((float32x4_t)a.val[1])[3];
+
+	return (__m256)res;
+}
+
+// Casts vector of type __m256 to type __m128. This intrinsic is only used for compilation and does not generate any instructions, 
+// thus it has zero latency.
+FORCE_INLINE __m128 _mm256_castps256_ps128(__m256 a)
+{
+	return (__m128)a.val[0];
+}
+
+// Extract 128 bits (composed of 4 packed single-precision (32-bit) floating-point elements) from a, 
+// selected with imm8, and store the result in dst.
+FORCE_INLINE __m128 _mm256_extractf128_ps(__m256 a, const int imm8)
+{
+	if(imm8 == 0)
+		return (__m128)a.val[0];
+	else if(imm8 == 1)
+		return (__m128)a.val[1];
+	else{
+		printf("%s:%d:%s:error: the last argument must be a 1-bit immediate\n", __FILE__, __LINE__, __FUNCTION__);
+		exit(1);
+	}	
+}
+
+// Casts vector of type __m128 to type __m256; the upper 128 bits of the result are undefined. 
+// This intrinsic is only used for compilation and does not generate any instructions, thus it has zero latency.
+FORCE_INLINE __m256 _mm256_castps128_ps256(__m128 a)
+{
+	float32x4x2_t res;
+	
+	res.val[0] = (float32x4_t)a;
+	
+	return (__m256)res;
+}
+
+// Copy a to dst, then insert 128 bits (composed of 4 packed single-precision (32-bit) 
+// floating-point elements) from b into dst at the location specified by imm8.
+FORCE_INLINE __m256 _mm256_insertf128_ps(__m256 a, __m128 b, int imm8)
+{
+	float32x4x2_t res = (float32x4x2_t)a;
+	
+	if(imm8 == 0)
+		res.val[0] = (float32x4_t)b;
+	else if(imm8 == 1)
+		res.val[1] = (float32x4_t)b;
+	else{
+		printf("%s:%d:%s:error: the last argument must be a 1-bit immediate\n", __FILE__, __LINE__, __FUNCTION__);
+		exit(1);	
+	}
+	
+	return (__m256)res;
+}
+
+// Convert packed 32-bit integers in a to packed single-precision (32-bit) floating-point elements, and store the results in dst.
+FORCE_INLINE __m256 _mm256_cvtepi32_ps(__m256i a)
+{
+	float32x4x2_t res;
+	
+	(res.val[0])[0] = (float)((int32x4_t)a.val[0])[0];
+	(res.val[0])[1] = (float)((int32x4_t)a.val[0])[1];
+	(res.val[0])[2] = (float)((int32x4_t)a.val[0])[2];
+	(res.val[0])[3] = (float)((int32x4_t)a.val[0])[3];
+	
+	(res.val[1])[0] = (float)((int32x4_t)a.val[1])[0];
+	(res.val[1])[1] = (float)((int32x4_t)a.val[1])[1];
+	(res.val[1])[2] = (float)((int32x4_t)a.val[1])[2];
+	(res.val[1])[3] = (float)((int32x4_t)a.val[1])[3];
+	
+	return (__m256)res;
+		
+	/*float32x4x2_t res;
+	
+	res.val[0] = (float32x4_t)(int32x4_t)a.val[0];
+	res.val[1] = (float32x4_t)(int32x4_t)a.val[1];
+	
+	return (__m256)res;*/
+	
+	/*float tmp[8];
+	float32x4x2_t res;
+	
+	(res.val[0])[0] = (float)vgetq_lane_s32((int32x4_t)a.val[0] , 0)
+	
+	
+	
+	//int32_t vgetq_lane_s32 (int32x4_t v, const int lane)
+	tmp[0] = (float64x1_t)_mm_set_pi32(0, vgetq_lane_s32((int32x4_t)a , 0));
+	tmp[1] = (float64x1_t)_mm_set_pi32(0, vgetq_lane_s32((int32x4_t)a , 1));
+	tmp[2] = (float64x1_t)_mm_set_pi32(0, vgetq_lane_s32((int32x4_t)a , 2));
+	tmp[3] = (float64x1_t)_mm_set_pi32(0, vgetq_lane_s32((int32x4_t)a , 3));
+	
+	return _mm256_set_pd(tmp[3], tmp[2], tmp[1], tmp[0]);*/
+}
+
+//Broadcast single-precision (32-bit) floating-point value a to all elements of dst.
+FORCE_INLINE __m256 _mm256_set1_ps(float a)
+{
+	float  ptr[] = {a, a, a, a};
+	 
+	//float32x4x2_t vld2q_dup_f32 (float32_t const * ptr)
+	return (__m256)vld2q_dup_f32(ptr);
+}
+
+#define NO_CMP -1
+#define CMP_EQ_OQ 0
+#define CMP_LT_OS 1
+#define CMP_LE_OS 2
+#define CMP_UNORD_Q 3
+#define CMP_NEQ_UQ 4
+#define CMP_NLT_US 5
+#define CMP_NLE_US 6
+#define CMP_ORD_Q 7
+#define CMP_EQ_UQ 8
+#define CMP_NGE_US 9
+#define CMP_NGT_US 10
+#define CMP_FALSE_OQ 11
+#define CMP_NEQ_OQ 12
+#define CMP_GE_OS 13
+#define CMP_GT_OS 14
+#define CMP_TRUE_UQ 15
+#define CMP_EQ_OS 16
+#define CMP_LT_OQ 17
+#define CMP_LE_OQ 18
+#define CMP_UNORD_S 19
+#define CMP_NEQ_US 20
+#define CMP_NLT_UQ 21
+#define CMP_NLE_UQ 22
+#define CMP_ORD_S 23
+#define CMP_EQ_US 24
+#define CMP_NGE_UQ 25
+#define CMP_NGT_UQ 26
+#define CMP_FALSE_OS 27
+#define CMP_NEQ_OS 28 
+#define CMP_GE_OQ 29
+#define CMP_GT_OQ 30
+#define CMP_TRUE_US 31
+
+FORCE_INLINE float ordered_cmp_ps(float a, float b, int cmp)
+{
+	if(isnan(a) || isnan(b))
+		return 0;
+	else{
+		switch(cmp){
+			case CMP_NEQ_OS:
+			case CMP_NEQ_OQ:
+				return (a != b) ? -NAN : 0;
+			default:
+				return -NAN;
+		}
+	}
+}
+
+FORCE_INLINE float unordered_cmp_ps(float a, float b, int cmp) //unordered
+{
+	if(isnan(a) || isnan(b)){
+		return -NAN;
+	}
+	else{
+		switch(cmp){
+			case CMP_NEQ_UQ:
+			case CMP_NEQ_US:
+				return (a != b) ? -NAN : 0;
+			case CMP_NLT_US:
+			case CMP_NLT_UQ:
+				return (a >= b) ? -NAN : 0;
+			case CMP_NLE_US:
+			case CMP_NLE_UQ:
+				return (a > b) ? -NAN : 0;
+			case CMP_EQ_UQ:
+			case CMP_EQ_US:
+				return (a == b) ? -NAN : 0;
+			case CMP_NGE_US:
+			case CMP_NGE_UQ:
+				return (a < b) ? -NAN : 0;
+			case CMP_NGT_US:
+			case CMP_NGT_UQ:
+				return (a <= b) ? -NAN : 0;
+			default:
+				return 0;
+		}
+	}
+}
+
+
+FORCE_INLINE __m256 unordered_vcmp_ps(__m256 a, __m256 b, int cmp)
+{	
+	float32x4x2_t a_tmp = (float32x4x2_t)a;
+	float32x4x2_t b_tmp = (float32x4x2_t)b;
+	
+	return _mm256_set_ps(unordered_cmp_ps((a_tmp.val[1])[3], (b_tmp.val[1])[3], cmp), unordered_cmp_ps((a_tmp.val[1])[2], (b_tmp.val[1])[2], cmp),
+	unordered_cmp_ps((a_tmp.val[1])[1], (b_tmp.val[1])[1], cmp), unordered_cmp_ps((a_tmp.val[1])[0], (b_tmp.val[1])[0], cmp), unordered_cmp_ps((a_tmp.val[0])[3], (b_tmp.val[0])[3], cmp),
+	unordered_cmp_ps((a_tmp.val[0])[2], (b_tmp.val[0])[2], cmp), unordered_cmp_ps((a_tmp.val[0])[1], (b_tmp.val[0])[1], cmp), unordered_cmp_ps((a_tmp.val[0])[0], (b_tmp.val[0])[0], cmp));
+}
+
+FORCE_INLINE __m256 ordered_vcmp_ps(__m256 a, __m256 b, int cmp)
+{	
+	float32x4x2_t a_tmp = (float32x4x2_t)a;
+	float32x4x2_t b_tmp = (float32x4x2_t)b;
+	
+	return _mm256_set_ps(ordered_cmp_ps((a_tmp.val[1])[3], (b_tmp.val[1])[3], cmp), ordered_cmp_ps((a_tmp.val[1])[2], (b_tmp.val[1])[2], cmp),
+	ordered_cmp_ps((a_tmp.val[1])[1], (b_tmp.val[1])[1], cmp), ordered_cmp_ps((a_tmp.val[1])[0], (b_tmp.val[1])[0], cmp),ordered_cmp_ps((a_tmp.val[0])[3], (b_tmp.val[0])[3], cmp),
+	ordered_cmp_ps((a_tmp.val[0])[2], (b_tmp.val[0])[2], cmp), ordered_cmp_ps((a_tmp.val[0])[1], (b_tmp.val[0])[1], cmp), ordered_cmp_ps((a_tmp.val[0])[0], (b_tmp.val[0])[0], cmp));
+}
+
+
+FORCE_INLINE __m256 _mm256_cmp_ps (__m256 a, __m256 b, const int imm8)
+{
+	float32x4x2_t res;
+	
+	if(imm8 > 31 || imm8 < 0){
+                printf("%s:%d:%s:error: the last argument must be a 5-bit immediate\n", __FILE__, __LINE__, __FUNCTION__);
+                exit(1);
+        }
+	
+	switch(imm8)
+	{
+		case CMP_EQ_OQ:
+		case CMP_EQ_OS:
+			res.val[0] = (float32x4_t)vceqq_f32((float32x4_t)a.val[0], (float32x4_t)b.val[0]);
+			res.val[1] = (float32x4_t)vceqq_f32((float32x4_t)a.val[1], (float32x4_t)b.val[1]);
+			break;
+		case CMP_LT_OS:
+		case CMP_LT_OQ:
+			res.val[0] = (float32x4_t)vcltq_f32((float32x4_t)a.val[0], (float32x4_t)b.val[0]);
+			res.val[1] = (float32x4_t)vcltq_f32((float32x4_t)a.val[1], (float32x4_t)b.val[1]);
+			break;
+		case CMP_LE_OS:
+		case CMP_LE_OQ:
+			res.val[0] = (float32x4_t)vcleq_f32((float32x4_t)a.val[0], (float32x4_t)b.val[0]);
+			res.val[1] = (float32x4_t)vcleq_f32((float32x4_t)a.val[1], (float32x4_t)b.val[1]);
+			break;
+		case CMP_UNORD_Q:
+		case CMP_UNORD_S:
+			return unordered_vcmp_ps(a, b, NO_CMP);
+		case CMP_NEQ_UQ:
+		case CMP_NEQ_US:
+			return unordered_vcmp_ps(a, b, CMP_NEQ_UQ);
+		case CMP_NLT_US:
+		case CMP_NLT_UQ:
+			return unordered_vcmp_ps(a, b, CMP_NLT_US);
+		case CMP_NLE_US:
+		case CMP_NLE_UQ:
+			return unordered_vcmp_ps(a, b, CMP_NLE_US);
+		case CMP_ORD_Q:
+		case CMP_ORD_S:
+			return ordered_vcmp_ps(a, b, NO_CMP);
+		case CMP_EQ_UQ:
+		case CMP_EQ_US:
+			return unordered_vcmp_ps(a, b, CMP_EQ_UQ);
+		case CMP_NGE_US:
+		case CMP_NGE_UQ:
+			return unordered_vcmp_ps(a, b, CMP_NGE_US);
+		case CMP_NGT_US:
+		case CMP_NGT_UQ:
+			return unordered_vcmp_ps(a, b, CMP_NGT_US);
+		case CMP_NEQ_OQ:
+		case CMP_NEQ_OS:
+			return ordered_vcmp_ps(a, b, CMP_NEQ_OQ);
+		case CMP_GE_OS:
+		case CMP_GE_OQ:		
+			res.val[0] = (float32x4_t)vcgeq_f32((float32x4_t)a.val[0], (float32x4_t)b.val[0]);
+			res.val[1] = (float32x4_t)vcgeq_f32((float32x4_t)a.val[1], (float32x4_t)b.val[1]);
+			break;
+		case CMP_GT_OS:
+		case CMP_GT_OQ:
+			res.val[0] = (float32x4_t)vcgtq_f32((float32x4_t)a.val[0], (float32x4_t)b.val[0]);
+			res.val[1] = (float32x4_t)vcgtq_f32((float32x4_t)a.val[1], (float32x4_t)b.val[1]);
+			break;
+		case CMP_FALSE_OQ:
+		case CMP_FALSE_OS:
+			return _mm256_set1_ps(0);	
+		case CMP_TRUE_UQ:
+		case CMP_TRUE_US:
+			return _mm256_set1_ps(-NAN);		
+	}
+	
+	return (__m256)res;
+}
+
+
+FORCE_INLINE double ordered_cmp_pd(double a, double b, int cmp)
+{
+	if(isnan(a) || isnan(b))
+		return 0;
+	else{
+		switch(cmp){
+			case CMP_NEQ_OS:
+			case CMP_NEQ_OQ:
+				return (a != b) ? -NAN : 0;
+			default:
+				return -NAN;
+		}
+	}
+}
+
+FORCE_INLINE double unordered_cmp_pd(double a, double b, int cmp) //unordered
+{
+	if(isnan(a) || isnan(b)){
+		return -NAN;
+	}
+	else{
+		switch(cmp){
+			case CMP_NEQ_UQ:
+			case CMP_NEQ_US:
+				return (a != b) ? -NAN : 0;
+			case CMP_NLT_US:
+			case CMP_NLT_UQ:
+				return (a >= b) ? -NAN : 0;
+			case CMP_NLE_US:
+			case CMP_NLE_UQ:
+				return (a > b) ? -NAN : 0;
+			case CMP_EQ_UQ:
+			case CMP_EQ_US:
+				return (a == b) ? -NAN : 0;
+			case CMP_NGE_US:
+			case CMP_NGE_UQ:
+				return (a < b) ? -NAN : 0;
+			case CMP_NGT_US:
+			case CMP_NGT_UQ:
+				return (a <= b) ? -NAN : 0;
+			default:
+				return 0;
+		}
+	}
+}
+
+
+FORCE_INLINE __m256d unordered_vcmp_pd(__m256d a, __m256d b, int cmp)
+{	
+	float64x2x2_t a_tmp = (float64x2x2_t)a;
+	float64x2x2_t b_tmp = (float64x2x2_t)b;
+	
+	return _mm256_set_pd(unordered_cmp_pd((a_tmp.val[1])[1], (b_tmp.val[1])[1], cmp), unordered_cmp_pd((a_tmp.val[1])[0], (b_tmp.val[1])[0], cmp),
+	unordered_cmp_pd((a_tmp.val[0])[1], (b_tmp.val[0])[1], cmp), unordered_cmp_pd((a_tmp.val[0])[0], (b_tmp.val[0])[0], cmp));
+}
+
+FORCE_INLINE __m256d ordered_vcmp_pd(__m256d a, __m256d b, int cmp)
+{	
+	float64x2x2_t a_tmp = (float64x2x2_t)a;
+	float64x2x2_t b_tmp = (float64x2x2_t)b;
+	
+	return _mm256_set_pd(ordered_cmp_pd((a_tmp.val[1])[1], (b_tmp.val[1])[1], cmp), ordered_cmp_pd((a_tmp.val[1])[0], (b_tmp.val[1])[0], cmp),
+	ordered_cmp_pd((a_tmp.val[0])[1], (b_tmp.val[0])[1], cmp), ordered_cmp_pd((a_tmp.val[0])[0], (b_tmp.val[0])[0], cmp));
+}
+
+
+FORCE_INLINE __m256d _mm256_cmp_pd(__m256d a, __m256d b, const int imm8)
+{
+	float64x2x2_t res;
+	
+	if(imm8 > 31 || imm8 < 0){
+                printf("%s:%d:%s:error: the last argument must be a 5-bit immediate\n", __FILE__, __LINE__, __FUNCTION__);
+                exit(1);
+        }
+	
+	switch(imm8)
+	{
+		case CMP_EQ_OQ:
+		case CMP_EQ_OS:
+			res.val[0] = (float64x2_t)vceqq_f64((float64x2_t)a.val[0], (float64x2_t)b.val[0]);
+			res.val[1] = (float64x2_t)vceqq_f64((float64x2_t)a.val[1], (float64x2_t)b.val[1]);
+			break;
+		case CMP_LT_OS:
+		case CMP_LT_OQ:
+			res.val[0] = (float64x2_t)vcltq_f64((float64x2_t)a.val[0], (float64x2_t)b.val[0]);
+			res.val[1] = (float64x2_t)vcltq_f64((float64x2_t)a.val[1], (float64x2_t)b.val[1]);
+			break;
+		case CMP_LE_OS:
+		case CMP_LE_OQ:
+			res.val[0] = (float64x2_t)vcleq_f64((float64x2_t)a.val[0], (float64x2_t)b.val[0]);
+			res.val[1] = (float64x2_t)vcleq_f64((float64x2_t)a.val[1], (float64x2_t)b.val[1]);
+			break;
+		case CMP_UNORD_Q:
+		case CMP_UNORD_S:
+			return unordered_vcmp_pd(a, b, NO_CMP);
+		case CMP_NEQ_UQ:
+		case CMP_NEQ_US:
+			return unordered_vcmp_pd(a, b, CMP_NEQ_UQ);
+		case CMP_NLT_US:
+		case CMP_NLT_UQ:
+			return unordered_vcmp_pd(a, b, CMP_NLT_US);
+		case CMP_NLE_US:
+		case CMP_NLE_UQ:
+			return unordered_vcmp_pd(a, b, CMP_NLE_US);
+		case CMP_ORD_Q:
+		case CMP_ORD_S:
+			return ordered_vcmp_pd(a, b, NO_CMP);
+		case CMP_EQ_UQ:
+		case CMP_EQ_US:
+			return unordered_vcmp_pd(a, b, CMP_EQ_UQ);
+		case CMP_NGE_US:
+		case CMP_NGE_UQ:
+			return unordered_vcmp_pd(a, b, CMP_NGE_US);
+		case CMP_NGT_US:
+		case CMP_NGT_UQ:
+			return unordered_vcmp_pd(a, b, CMP_NGT_US);
+		case CMP_NEQ_OQ:
+		case CMP_NEQ_OS:
+			return ordered_vcmp_pd(a, b, CMP_NEQ_OQ);
+		case CMP_GE_OS:
+		case CMP_GE_OQ:		
+			res.val[0] = (float64x2_t)vcgeq_f64((float64x2_t)a.val[0], (float64x2_t)b.val[0]);
+			res.val[1] = (float64x2_t)vcgeq_f64((float64x2_t)a.val[1], (float64x2_t)b.val[1]);
+			break;
+		case CMP_GT_OS:
+		case CMP_GT_OQ:
+			res.val[0] = (float64x2_t)vcgtq_f64((float64x2_t)a.val[0], (float64x2_t)b.val[0]);
+			res.val[1] = (float64x2_t)vcgtq_f64((float64x2_t)a.val[1], (float64x2_t)b.val[1]);
+			break;
+		case CMP_FALSE_OQ:
+		case CMP_FALSE_OS:
+			return _mm256_set1_pd(0);	
+		case CMP_TRUE_UQ:
+		case CMP_TRUE_US:
+			return _mm256_set1_pd(-NAN);		
+	}
+	
+	return (__m256d)res;
+}
+	
+FORCE_INLINE __m256 _mm256_set_ps(float e7, float e6, float e5, float e4, float e3, float e2, float e1, float e0)
+{
+	float ptr[] = {e0, e4, e1, e5, e2, e6, e3, e7};
+	
+	return (__m256)vld2q_f32(ptr);
+}
+
+// Set packed double-precision (64-bit) floating-point elements in dst with the supplied values.
+FORCE_INLINE __m256d _mm256_set_pd(double e3, double e2, double e1, double e0)
+{
+	/*double ptr[] = {e0, e2, e1, e3};
+	
+	//float64x2x2_t vld2q_f64 (float64_t const * ptr)
+	return (__m256d)vld2q_f64(ptr);*/
+
+	float64x2x2_t res;
+
+	(res.val[0])[0] = e0;
+	(res.val[0])[1] = e1;
+	(res.val[1])[0] = e2;
+	(res.val[1])[1] = e3;
+
+	return (__m256d)res;
+}
+
+
+
+
+FORCE_INLINE __m128 _mm_set_ps(float e3, float e2, float e1, float e0)
+{
+	float ptr[] = {e0, e1, e2, e3};
+	
+	// float32x4_t vld1q_f32 (float32_t const * ptr)
+	return (__m128)vld1q_f32(ptr);
+}
+
+FORCE_INLINE __m256i _mm256_set_epi32(int e7, int e6, int e5, int e4, int e3, int e2, int e1, int e0)
+{
+	int ptr[] = {e0, e4, e1, e5, e2, e6, e3, e7};
+	
+	return (__m256i)vld2q_s32(ptr);
+}
+
+//-------------------------------------------HLRS-------------------------------------------------------
+// Set packed double-precision (64-bit) floating-point elements in dst with the supplied values.
+FORCE_INLINE __m128d _mm_set_pd(double e1, double e0)
+{
+	/*// float64x2_t vld1q_f64 (float64_t const * ptr)
+	double ptr[] = {e0, e1};
+	
+	return (__m128d)vld1q_f64(ptr);*/
+	float64x2_t res;
+
+	res[0] = e0;
+	res[1] = e1;
+
+	return (__m128d)res;	
+}
+
+// Load a double-precision (64-bit) floating-point element from memory into the lower of dst, 
+// and zero the upper element. mem_addr does not need to be aligned on any particular boundary.
+FORCE_INLINE __m128d _mm_load_sd(const double * p)
+{
+	// float64x2_t vdupq_n_f64 (float64_t value)
+	float64x2_t result = vdupq_n_f64(0);
+	
+	// float64x2_t vsetq_lane_f64 (float64_t a, float64x2_t v, const int lane)
+	return (__m128d)vsetq_lane_f64(*p, result, 0);
+}
+
+// Store the lower double-precision (64-bit) floating-point element from a into memory. 
+// mem_addr does not need to be aligned on any particular boundary.
+FORCE_INLINE void _mm_store_sd(double *p, __m128d a)
+{
+	// void vst1q_lane_f64 (float64_t * ptr, float64x2_t val, const int lane)
+	vst1q_lane_f64(p, (float64x2_t)a, 0);
+	//*p = ((float64x2_t)a)[0];
+}
+
+// Add the lower double-precision (64-bit) floating-point element in a and b, store the result 
+// in the lower element of dst, and copy the upper element from a to the upper element of dst.
+// overflow
+#if 0
+FORCE_INLINE __m128d _mm_add_sd(__m128d a, __m128d b)
+{
+	// float64x1_t vget_low_f64 (float64x2_t a)
+	float64x1_t result = vadd_f64(vget_low_f64((float64x2_t)a), vget_low_f64((float64x2_t)b));
+	
+	return (__m128d)vcombine_f64(result, vget_high_f64((float64x2_t)a));
+}
+#endif
+
+// Horizontally add adjacent pairs of double-precision (64-bit) floating-point elements in a and b,
+// and pack the results in dst.
+FORCE_INLINE __m128d _mm_hadd_pd(__m128d a, __m128d b)
+{
+	//return (__m128)vcombine_f64(vadd_f64(vget_low_f64(a), vget_high_f64(a)), (float64x1_t)vpadd_f32((float32x2_t)vget_low_f64(b), (float32x2_t)vget_high_f64(b)));
+	// float64x2_t vpaddq_f64 (float64x2_t a, float64x2_t b)
+	return (__m128d)vpaddq_f64((float64x2_t)a, (float64x2_t)b);
+}
+
+// Return vector of type __m128d with all elements set to zero.
+FORCE_INLINE __m128d _mm_setzero_pd(void)
+{
+	return (__m128d)vdupq_n_f64(0);
+}
+
+// Cast vector of type __m128i to type __m128d. This intrinsic is only used for compilation and does not generate any instructions, thus it has zero latency.
+FORCE_INLINE __m128d _mm_castsi128_pd(__m128i a)
+{
+	return (__m128d)a;
+	//return (__m128d)vcvtq_f64_s64((int64x2_t)a);
+}
+
+// Cast vector of type __m128d to type __m128i. This intrinsic is only used for compilation and does not generate any instructions, thus it has zero latency.
+FORCE_INLINE __m128i _mm_castpd_si128(__m128d a)
+{
+	return (__m128i)a;
+	// return (__m128i)vcvtq_s64_f64((float64x2_t)a);
+}
+
+// Compare packed double-precision (64-bit) floating-point elements in a and b for less-than, and store the results in dst.
+FORCE_INLINE __m128d _mm_cmplt_pd(__m128d a, __m128d b)
+{
+	// uint64x2_t vcltq_f64 (float64x2_t a, float64x2_t b)
+	return (__m128d)vcltq_f64((float64x2_t)a, (float64x2_t)b);
+}
+
+// Compare packed double-precision (64-bit) floating-point elements in a and b for equality, and store the results in dst.
+FORCE_INLINE __m128d _mm_cmpeq_pd(__m128d a, __m128d b)
+{
+	// uint64x2_t vceqq_f64 (float64x2_t a, float64x2_t b)
+	return (__m128d)vceqq_f64((float64x2_t)a, (float64x2_t)b);
+}
+
+// Compare packed double-precision (64-bit) floating-point elements in a and b for not-equal, and store the results in dst.
+FORCE_INLINE __m128d _mm_cmpneq_pd(__m128d a, __m128d b)
+{
+	uint64x2_t res = vceqq_f64((float64x2_t)a, (float64x2_t)b);
+	
+	// uint32x4_t vmvnq_u32(uint32x4_t a)
+	return (__m128d)vmvnq_u32((uint32x4_t)res);
+}
+
+// Computes the bitwise AND of the 128-bit value in a and the 128-bit value in b.
+FORCE_INLINE __m128i _mm_and_si128(__m128i a, __m128i b)
+{
+	// int32x4_t vandq_s32 (int32x4_t a, int32x4_t b)
+	return (__m128i)vandq_s32((int32x4_t)a, (int32x4_t)b);
+}
+
+// Computes the bitwise OR of the 128-bit value in a and the 128-bit value in b.
+FORCE_INLINE __m128i _mm_or_si128(__m128i a, __m128i b)
+{
+	return (__m128i)vorrq_s32((int32x4_t)a, (int32x4_t)b);
+}
+
+// Computes the bitwise XOR of the 128-bit value in a and the 128-bit value in b. 
+FORCE_INLINE __m128i _mm_xor_si128(__m128i a, __m128i b)
+{
+	return (__m128i)veorq_s32((int32x4_t)a, (int32x4_t)b);
+}
+
+// Add packed double-precision (64-bit) floating-point elements in a and b, and store the results in dst.
+FORCE_INLINE __m128d _mm_add_pd(__m128d a, __m128d b)
+{
+	// float64x2_t vaddq_f64 (float64x2_t a, float64x2_t b)
+	return (__m128d)vaddq_f64((float64x2_t)a, (float64x2_t)b);
+}
+
+// Subtract packed double-precision (64-bit) floating-point elements in b from packed double-precision 
+// (64-bit) floating-point elements in a, and store the results in dst.
+FORCE_INLINE __m128d _mm_sub_pd(__m128d a, __m128d b)
+{
+	return (__m128d)vsubq_f64((float64x2_t)a, (float64x2_t)b);
+}
+
+// Multiply packed double-precision (64-bit) floating-point elements in a and b, and store the results in dst.
+FORCE_INLINE __m128d _mm_mul_pd(__m128d a, __m128d b)
+{
+	/*__m128d ret;
+	
+	ret[0] = a[0] * b[0];
+	ret[1] = a[1] * b[1];
+	
+	return ret;*/
+	
+	// float64x2_t vmulq_f64 (float64x2_t a, float64x2_t b)
+	return (__m128d)vmulq_f64((float64x2_t)a, (float64x2_t)b);
+}
+
+// Divide packed double-precision (64-bit) floating-point elements in a by packed elements in b, and store the results in dst.
+// div 0
+FORCE_INLINE __m128d _mm_div_pd(__m128d a, __m128d b)
+{
+	// float64x2_t vdivq_f64 (float64x2_t a, float64x2_t b)
+	return (__m128d)vdivq_f64((float64x2_t)a, (float64x2_t)b);
+}
+
+// Compute the square root of packed double-precision (64-bit) floating-point elements in a, and store the results in dst.
+// -4
+FORCE_INLINE __m128d _mm_sqrt_pd(__m128d a)
+{
+	
+	// float64x2_t vsqrtq_f64 (float64x2_t a)
+	return (__m128d)vsqrtq_f64((float64x2_t)a);
+}
+
+// Broadcast double-precision (64-bit) floating-point value a to all elements of dst.
+FORCE_INLINE __m128d _mm_set1_pd(double a)
+{
+	return (__m128d)vdupq_n_f64(a);
+}
+
+// Broadcast 64-bit integer a to all elements of dst. This intrinsic may generate the vpbroadcastq.
+FORCE_INLINE __m128i _mm_set1_epi64x(__int64 a)
+{
+	return (__m128i)vdupq_n_s64(a);
+}
+
+// Load 128-bits (composed of 2 packed double-precision (64-bit) floating-point elements) from memory into dst. 
+// mem_addr must be aligned on a 16-byte boundary or a general-protection exception may be generated.
+FORCE_INLINE __m128d _mm_load_pd(double const* mem_addr)
+{
+	return (__m128d)vld1q_f64(mem_addr);
+}
+
+// Load 128-bits of integer data from memory into dst. mem_addr must be aligned on a 16-byte boundary or a general-protection exception may be generated.
+FORCE_INLINE __m128i _mm_load_si128(__m128i const* mem_addr)
+{
+	return (__m128i)vld1q_s32((int32_t *)mem_addr);
+}
+
+// Load a double-precision (64-bit) floating-point element from memory into both elements of dst.
+FORCE_INLINE __m128d _mm_loaddup_pd(double const* mem_addr)
+{
+	return (__m128d)vdupq_n_f64(*mem_addr);
+	//return vcombine_f64(vld1_f64(p),vld1_f64(p));
+}
+
+// Store 128-bits (composed of 2 packed double-precision (64-bit) floating-point elements) from a into memory. mem_addr must be aligned on 
+// a 16-byte boundary or a general-protection exception may be generated.
+FORCE_INLINE void _mm_store_pd(double* mem_addr, __m128d a)
+{
+	// void vst1q_f64(float64_t * ptr, float64x2_t val)
+	return vst1q_f64(mem_addr, (float64x2_t)a);
+}
+
+// Store 128-bits of integer data from a into memory. mem_addr must be aligned on a 16-byte boundary
+// or a general-protection exception may be generated.
+FORCE_INLINE void _mm_store_si128(__m128i* mem_addr, __m128i a)
+{
+	// void vst1q_s32 (int32_t * ptr, int32x4_t val)
+	vst1q_s32((int32_t*)mem_addr, (int32x4_t)a);
+}
+
+// Unpack and interleave double-precision (64-bit) floating-point elements from the low half of a and b, and store the results in dst.
+FORCE_INLINE __m128d _mm_unpacklo_pd(__m128d a, __m128d b)
+{
+	/*float32x2x2_t result = vzip_f32((float32x2_t)vget_low_f64(a), (float32x2_t)vget_low_f64(b));
+	
+	return vcombine_f64((float64x1_t)result.val[0], (float64x1_t)result.val[1]);*/
+	
+	return (__m128d)vcombine_f64(vget_low_f64((float64x2_t)a), vget_low_f64((float64x2_t)b));
+}
+
+// npack and interleave double-precision (64-bit) floating-point elements from the high half of a and b, and store the results in dst.
+FORCE_INLINE __m128d _mm_unpackhi_pd(__m128d a, __m128d b)
+{
+	/*float32x2x2_t result = vzip_f32((float32x2_t)vget_high_f64(a), (float32x2_t)vget_high_f64(b));
+	
+	return vcombine_f64((float64x1_t)result.val[0], (float64x1_t)result.val[1]);*/
+	
+	return (__m128d)vcombine_f64(vget_high_f64((float64x2_t)a), vget_high_f64((float64x2_t)b));
+}
+
+FORCE_INLINE __m256i _mm256_set1_epi32(int a)
+{
+int32x4x2_t res;
+(res.val[0])[0] = a;
+(res.val[0])[1] = a;
+(res.val[0])[2] = a;
+(res.val[0])[3] = a;
+(res.val[1])[0] = a;
+(res.val[1])[1] = a;
+(res.val[1])[2] = a;
+(res.val[1])[3] = a;
+return (__m256i)res;
+}
+
+#if defined(__GNUC__) || defined(__clang__)
+#       pragma pop_macro("ALIGN_STRUCT")
+#       pragma pop_macro("FORCE_INLINE")
+#endif
+
+#endif
