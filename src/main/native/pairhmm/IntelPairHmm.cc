@@ -78,7 +78,7 @@ JNIEXPORT void JNICALL Java_com_intel_gkl_pairhmm_IntelPairHmm_initNative
     g_compute_full_prob_float = compute_fp_avx512s;
     g_compute_full_prob_double = compute_fp_avx512d;
     //g_compute_full_prob_float = compute_fp_avxs;
-    //g_compute_full_prob_double = compute_fp_avxd;    
+    //g_compute_full_prob_double = compute_fp_avxd;
 #else
     assert(false);
 #endif
