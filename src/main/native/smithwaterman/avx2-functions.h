@@ -71,9 +71,13 @@
 #define VEC_ANDNOT(__v1, __v2) \
     _mm256_andnot_si256(__v1, __v2)
 
+#ifdef __X86_64
 #define VEC_BLEND(__v1, __v2, __mask) \
     (__m256i)_mm256_blendv_ps((__m256)__v1, (__m256)__v2, (__m256)__mask)
-
+#else
+#define VEC_BLEND(__v1, __v2, __mask) \
+   (__m256i)_mm256_blendv_epi32(__v1, __v2, __mask)
+#endif
 
 #define VEC_PERMUTE2x128_EVEN(__v1, __v2) \
     _mm256_permute2f128_si256(__v1, __v2, 0x20)    

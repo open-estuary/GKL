@@ -1,9 +1,21 @@
 project(GKL)
 cmake_minimum_required(VERSION 2.8)
 
-
+#execute_process(COMMAND uname -p OUTPUT_VARIABLE ARM RESULT_VARIABLE result)
+#STRING(REGEX REPLACE "(\r?\n)+$" "" ARM "${ARM}")
 # common compiler and linker settings
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O3 -mavx")
+#if ("${ARM}" STREQUAL "aarch64")
+#    set (aarch64 "ON")
+#else()
+#    set (aarch64 "OFF")
+#endif()
+#if(${aarch64} STREQUAL "ON")
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O3")
+#  message("==================== 1111 =================")
+#else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O3 -mavx")
+  #endif()
+
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 if(APPLE)
   set(CMAKE_SHARED_LINKER_FLAGS "-static-libstdc++")

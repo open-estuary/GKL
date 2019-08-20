@@ -55,6 +55,10 @@
 #include "x86.h"
 #endif
 
+#ifdef __aarch64__
+    #define x86_cpu_has_sse42 1
+#endif
+
 const char deflate_copyright[] =
    " deflate 1.2.8.1 Copyright 1995-2013 Jean-loup Gailly and Mark Adler ";
 /*

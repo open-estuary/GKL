@@ -8,7 +8,12 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include <immintrin.h>
+#ifdef __aarch64__
+    #include "sse2neon.h"
+    #include "sse2neon_ext.h"
+#else
+    #include <immintrin.h>
+#endif
 #include <assert.h>
 #include <debug.h>
 #include "avx2_impl.h"
@@ -31,7 +36,8 @@ if(is_avx512_supported())
     #ifndef __APPLE__
         DBG("Using CPU-supported AVX-512 instructions");
         g_runSWOnePairBT = runSWOnePairBT_fp_avx512;
-
+        //g_runSWOnePairBT = runSWOnePairBT_fp_avx2;
+    
     #else
         assert(false);
     #endif

@@ -25,6 +25,7 @@ Context<double> g_ctxd;
 
 float (*g_compute_full_prob_float)(testcase *tc);
 double (*g_compute_full_prob_double)(testcase *tc);
+#define DEBUG
 
 /*
  * Class:     com_intel_gkl_pairhmm_IntelPairHmm
@@ -76,6 +77,8 @@ JNIEXPORT void JNICALL Java_com_intel_gkl_pairhmm_IntelPairHmm_initNative
     DBG("Using CPU-supported AVX-512 instructions");
     g_compute_full_prob_float = compute_fp_avx512s;
     g_compute_full_prob_double = compute_fp_avx512d;
+    //g_compute_full_prob_float = compute_fp_avxs;
+    //g_compute_full_prob_double = compute_fp_avxd;
 #else
     assert(false);
 #endif

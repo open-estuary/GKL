@@ -4,14 +4,19 @@
 #if defined(_MSC_VER)
   #include <intrin.h> // SIMD intrinsics for Windows
 #else
-  #include <x86intrin.h> // SIMD intrinsics for GCC
+    #ifdef __aarch64__
+    #include "sse2neon.h"
+    #include "sse2neon_ext.h"
+  #else 
+    #include <x86intrin.h> // SIMD intrinsics for GCC
+  #endif
 #endif
 
 #define __STDC_LIMIT_MACROS
 
 #include <stdint.h>
 #include <string.h>
-#include <immintrin.h>
+//#include <immintrin.h>
 
 
 

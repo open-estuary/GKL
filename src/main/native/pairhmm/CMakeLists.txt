@@ -1,11 +1,23 @@
 #---------------------------------------------------------------------
 # common
 #---------------------------------------------------------------------
+execute_process(COMMAND uname -p OUTPUT_VARIABLE ARM RESULT_VARIABLE result)
+STRING(REGEX REPLACE "(\r?\n)+$" "" ARM "${ARM}")
+if ("${ARM}" STREQUAL "aarch64")
+    set (aarch64 "ON")
+else()
+    set (aarch64 "OFF")
+endif()
 if(NOT APPLE)
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-as-needed")
 endif()
-set_property(SOURCE avx_impl.cc APPEND_STRING PROPERTY COMPILE_FLAGS " -mavx ")
-set_property(SOURCE avx512_impl.cc APPEND_STRING PROPERTY COMPILE_FLAGS " -mavx -mavx2 -mavx512f -mavx512dq -mavx512vl ")
+
+if(${aarch64} STREQUAL "ON")
+  #Do not set anything
+else()
+  set_property(SOURCE avx_impl.cc APPEND_STRING PROPERTY COMPILE_FLAGS " -mavx ")
+  set_property(SOURCE avx512_impl.cc APPEND_STRING PROPERTY COMPILE_FLAGS " -mavx -mavx2 -mavx512f -mavx512dq -mavx512vl ")
+endif()
 
 #---------------------------------------------------------------------
 # common includes
